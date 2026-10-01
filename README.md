@@ -2,15 +2,21 @@
 
 Single-page landing site for **DD Network**, the professional relationship network by Decoding Draupadi.
 
-Plain HTML, CSS and JavaScript. No framework, no build step, so it can be hosted anywhere (Netlify, Vercel, GitHub Pages, any static host).
+Plain HTML, CSS and JavaScript, with no framework. One tiny build script writes the editable content into `index.html`, so the price, FAQ and hosts are real HTML. That means search engines, link previews and AI tools can all read them, and so can anyone with JavaScript off.
 
 ```
-index.html            Page structure and editorial copy
-assets/js/content.js  ← EDIT THIS: prices, benefits, hosts, photos, links, FAQ, hero
-assets/css/styles.css Design system (colours, type, layout)
-assets/js/main.js     Rendering, CTAs, forms, analytics (no need to edit)
-assets/img/           Put your own photos here
+index.html             Page structure and editorial copy (content blocks are filled by the build)
+assets/js/content.js   ← EDIT THIS: price, benefits, cadence, Founding 50, hosts, founder, photos, links, FAQ, hero
+scripts/build.mjs      Writes content.js into index.html:  node scripts/build.mjs
+assets/js/render.js    The HTML templates the build uses
+assets/css/styles.css  Design system (palette, type, layout)
+assets/js/main.js      CTAs, forms, analytics (no need to edit)
+assets/img/            Put your own photos here
 ```
+
+**After editing `content.js`, run `node scripts/build.mjs`** (Node 16+). Netlify runs it automatically on every deploy (see `netlify.toml`). Blocks in `index.html` between `<!--@name-->` and `<!--/@-->` are generated, so edit `content.js` rather than those blocks.
+
+Palette: Demonic Red `#BB2233` · Atomic Orange `#FB8B04` · Autumn White `#FAE3D0` · Firmament Blue `#0C1124` (tokens at the top of `styles.css`).
 
 ## Preview locally
 
@@ -25,22 +31,21 @@ On `localhost`, forms run in **demo mode**: nothing is sent, and the submission 
 
 | What | Where in `content.js` |
 |---|---|
-| Hero headline and copy | `hero` (`<em>` in the headline gives the maroon italic) |
-| Hero photo | `hero.image` |
-| Membership price | `membership.tiers[0].price`, plus `period`, `altPrice` (quarterly) |
-| Hide the price | `membership.showPrices: false` |
+| Hero headline and copy | `hero` (`<em>` in the headline gives the red italic) |
+| Credibility line under the hero | `credibility` |
+| Membership price | `membership.tiers[0].price` and `period` (also feeds the hero line and the FAQ) |
 | Multiple tiers | add objects to `membership.tiers`; the page switches to side-by-side tiers automatically |
-| Benefits list | `membership.included` |
-| Founding member count | `founding.total` (default 50) |
-| Add a founding member | push `{ name, role, photo }` into `founding.members`; their slot fills in |
-| Show "12 of 50 taken" | `founding.showCount: true` |
-| Founding hosts | `hosts.profiles`: `{ name, role, line, photo }`. An empty `name` shows "To be announced" |
-| Founder | `founder` (bio, photo, LinkedIn) |
+| What's included | `membership.included` |
+| "Your year as a member" cadence | `rhythm` |
+| Founding places | `founding.total`; set `founding.taken` and `showTaken: true` to show "38 of 50 places left" |
+| Founding benefits | `founding.benefits` |
+| Founding hosts | `hosts.profiles`: `{ name, role, line, room, photo }`. An empty `name` shows "Announcing soon" |
+| Founder | `founder` (bio, photo, LinkedIn); with a photo, the layout becomes portrait + text |
 | Section photos | `images.*` (any URL or a local path such as `assets/img/dinner.jpg`) |
 | FAQ | `faq` array. `{{price}}` is replaced with the live price |
 | CTA links | `links.invite` / `links.newsletter`: leave empty for the built-in forms, or set a URL (e.g. Typeform) |
 
-Photos crop automatically (`object-fit: cover`), so replacing an image never breaks the layout. If an image fails to load, its slot shows a warm tonal placeholder instead of a broken image.
+Photos crop automatically (`object-fit: cover`), so replacing an image never breaks the layout. If an image fails to load, its slot shows a warm tonal block instead of a broken image.
 
 **Note:** the Unsplash photos are starting points only. Replace them with real DD dinners and rooms as soon as you have them.
 
@@ -48,8 +53,8 @@ Photos crop automatically (`object-fit: cover`), so replacing an image never bre
 
 There are two separate conversion paths:
 
-- **Request an Invite**: name, email, LinkedIn, what you do, what you're hoping to make happen, and an optional question on what you could help another woman with.
-- **Join the Newsletter**: name and email.
+- **Request an invite**: name, email, LinkedIn and what you do, then the two core questions: *what are you trying to make happen next?* and *what could you help another woman with?*
+- **The DD Network letter**: name and email.
 
 Every submission also carries:
 
@@ -74,6 +79,7 @@ Set `analytics.ga4Id` (Google Analytics 4) and/or `analytics.plausibleDomain`. E
 | `cta_click` | any CTA is clicked (`cta`, `location`) |
 | `request_invite_click` | a Request an Invite button is clicked (`location`) |
 | `newsletter_click` | a newsletter button is clicked (`location`) |
+| `see_how_click` | the hero's "See how it works" link is clicked |
 | `invite_form_open` / `invite_form_start` | invite form is opened / first typed into |
 | `invite_form_submit` | invite request is sent (`source`) |
 | `newsletter_signup` | newsletter sign-up is sent (`source`) |
@@ -86,5 +92,5 @@ CTA conversion = `invite_form_submit ÷ request_invite_click`, broken down by `l
 
 ## Deploy
 
-- **Netlify:** drag the folder into Netlify, or connect this repo. There's no build command, and the publish directory is the repo root.
-- **Anything else:** upload the files as they are. Switch `forms.mode` to `"endpoint"` first.
+- **Netlify:** connect this repo. `netlify.toml` already sets the build command (`node scripts/build.mjs`) and the publish directory (the repo root).
+- **Anything else:** run the build, then upload the files. Switch `forms.mode` to `"endpoint"` first.

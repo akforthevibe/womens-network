@@ -1,6 +1,7 @@
 /* ==========================================================================
    DD NETWORK — Behaviour
-   Renders editable content from content.js, handles CTAs, forms & analytics.
+   Handles CTAs, forms, analytics and page behaviour.
+   Content is written into index.html by scripts/build.mjs.
    You shouldn't need to edit this file to change copy, prices or people.
    ========================================================================== */
 (function () {
@@ -13,19 +14,6 @@
   /* ---------------------------------------------------------------- utils */
   function $(sel, root) { return (root || doc).querySelector(sel); }
   function $$(sel, root) { return Array.prototype.slice.call((root || doc).querySelectorAll(sel)); }
-  function get(path) {
-    return path.split(".").reduce(function (o, k) { return o == null ? undefined : o[k]; }, C);
-  }
-  function esc(s) {
-    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
-      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
-    });
-  }
-  function pad(n) { return n < 10 ? "0" + n : String(n); }
-  function money(n) {
-    var cur = (C.membership && C.membership.currency) || "₹";
-    return cur + Number(n).toLocaleString("en-IN");
-  }
   var isLocal = /^(localhost|127\.|0\.0\.0\.0|\[::1\])/.test(location.hostname) || location.protocol === "file:";
 
   /* ------------------------------------------------------------ analytics */
@@ -82,188 +70,15 @@
     } catch (e) { return out.join("&"); }
   })();
 
-  /* ------------------------------------------------------------ rendering */
-  function bindText() {
-    $$("[data-bind]").forEach(function (el) {
-      var v = get(el.getAttribute("data-bind"));
-      if (v) el.innerHTML = v; // trusted content from content.js (allows <em>)
+  /* ---------------------------------------------------- small trackers */
+  $$(".faq details").forEach(function (d) {
+    d.addEventListener("toggle", function () {
+      if (d.open) track("faq_open", { question: $("summary", d).textContent });
     });
-    $$("[data-bind-text]").forEach(function (el) {
-      var v = get(el.getAttribute("data-bind-text"));
-      if (v != null && v !== "") el.textContent = v;
-    });
-    $$("[data-year]").forEach(function (el) { el.textContent = new Date().getFullYear(); });
-  }
-
-  function setImage(fig, data) {
-    var img = $("img", fig);
-    if (!img) return;
-    if (!data || !data.src) { fig.classList.add("is-failed"); return; }
-    img.setAttribute("data-loading", "");
-    img.onload = function () { img.removeAttribute("data-loading"); };
-    img.onerror = function () { fig.classList.add("is-failed"); };
-    img.alt = data.alt || "";
-    img.src = data.src;
-    var cap = $("figcaption", fig);
-    if (cap && data.caption && !cap.children.length) cap.textContent = data.caption;
-  }
-
-  function renderImages() {
-    $$("[data-image]").forEach(function (fig) { setImage(fig, get(fig.getAttribute("data-image"))); });
-  }
-
-  function renderHeroMeta() {
-    var el = $('[data-render="hero-meta"]');
-    var meta = C.hero && C.hero.meta;
-    if (!el || !meta) return;
-    el.innerHTML = meta.map(esc).join('<span class="dot" aria-hidden="true">·</span>');
-  }
-
-  function priceLine(t) {
-    return money(t.price) + " / " + t.period;
-  }
-
-  function renderPricing() {
-    var el = $('[data-render="pricing"]');
-    var M = C.membership;
-    if (!el || !M || !M.tiers || !M.tiers.length) return;
-    var tiers = M.tiers;
-    var show = M.showPrices !== false;
-
-    var included = '<p class="includes-title">' + (tiers.length > 1 ? "Every membership includes" : "Includes") + '</p>' +
-      '<ul class="includes">' + (M.included || []).map(function (i) { return "<li>" + esc(i) + "</li>"; }).join("") + "</ul>";
-
-    function tierHTML(t, i) {
-      var priceHTML = show
-        ? '<p class="price">' + esc(money(t.price)) + "<small>/ " + esc(t.period) + "</small></p>" +
-          (t.altPrice ? '<p class="price-alt">or ' + esc(money(t.altPrice)) + " / " + esc(t.altPeriod || "quarter") + "</p>" : "")
-        : '<p class="price-tbd">Founding rate shared with your invite.</p>';
-      var extras = tiers.length > 1 && t.extras && t.extras.length
-        ? '<ul class="tier-extras">' + t.extras.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>"
-        : "";
-      return '<div class="' + (tiers.length > 1 ? "tier" : "price-block") + '">' +
-        '<p class="tier-name">' + esc(t.name) + "</p>" + priceHTML +
-        (t.forWhom ? '<p class="tier-for">' + esc(t.forWhom) + "</p>" : "") + extras +
-        '<a class="btn ' + (i === 0 || tiers.length === 1 ? "btn-primary" : "btn-dark") + '" href="#invite" data-cta="invite" data-loc="pricing' + (tiers.length > 1 ? "-" + (i + 1) : "") + '" data-tier="' + esc(t.name) + '">Request an Invite <span aria-hidden="true">→</span></a>' +
-        (tiers.length === 1 && M.note ? '<p class="price-note">' + esc(M.note) + "</p>" : "") +
-        "</div>";
-    }
-
-    if (tiers.length === 1) {
-      el.innerHTML = '<div class="price-single">' + tierHTML(tiers[0], 0) + "<div>" + included + "</div></div>";
-    } else {
-      var title = $('[data-render="membership-title"]');
-      if (title) title.textContent = "One network. Different levels of access.";
-      el.innerHTML = '<div class="price-multi">' + tiers.map(tierHTML).join("") + "</div>" +
-        '<div class="price-shared">' + included + (M.note ? '<p class="price-note">' + esc(M.note) + "</p>" : "") + "</div>";
-    }
-  }
-
-  function renderFounding() {
-    var F = C.founding;
-    if (!F) return;
-    var total = F.total || 50;
-    var members = F.members || [];
-
-    var ben = $('[data-render="founding-benefits"]');
-    if (ben) ben.innerHTML = (F.benefits || []).map(function (b) { return "<li>" + esc(b) + "</li>"; }).join("");
-
-    var count = $('[data-render="founding-count"]');
-    if (count) {
-      count.textContent = F.showCount
-        ? members.length + " of " + total + " founding places taken"
-        : total + " founding places · Mumbai";
-    }
-
-    var slots = $('[data-render="founding-slots"]');
-    if (!slots) return;
-    var html = "";
-    for (var i = 0; i < total; i++) {
-      var m = members[i];
-      var n = pad(i + 1);
-      if (m) {
-        html += '<li class="slot is-filled" title="' + esc(m.name + (m.role ? " — " + m.role : "")) + '">' +
-          (m.photo ? '<img src="' + esc(m.photo) + '" alt="' + esc(m.name) + '" loading="lazy">' : "") +
-          '<span class="slot-meta"><span class="slot-label">' + esc(m.name) + '</span></span></li>';
-      } else {
-        html += '<li class="slot' + (i === members.length ? " is-next" : "") + '"><span class="slot-label">Founding</span><span class="slot-n">' + n + "</span></li>";
-      }
-    }
-    slots.innerHTML = html;
-  }
-
-  function renderHosts() {
-    var H = C.hosts;
-    if (!H) return;
-    var grid = $('[data-render="hosts"]');
-    if (grid) {
-      grid.innerHTML = (H.profiles || []).map(function (h, i) {
-        var named = h.name && h.name.trim();
-        return '<article class="host reveal">' +
-          '<figure class="host-photo media' + (h.photo ? "" : " is-placeholder") + '">' +
-          (h.photo ? '<img alt="' + esc(h.name) + '" loading="lazy">' : '<span class="ph-mark">' + pad(i + 1) + "</span>") +
-          "</figure>" +
-          '<p class="host-name' + (named ? "" : " is-tba") + '">' + (named ? esc(h.name) : "To be announced") + "</p>" +
-          (h.role ? '<p class="host-role">' + esc(h.role) + "</p>" : "") +
-          (h.line ? '<p class="host-line">“' + esc(h.line) + "”</p>" : "") +
-          "</article>";
-      }).join("");
-      $$(".host", grid).forEach(function (el, i) {
-        var h = H.profiles[i];
-        if (h.photo) setImage($(".host-photo", el), { src: h.photo, alt: h.name });
-      });
-    }
-    var com = $('[data-render="host-commitments"]');
-    if (com) com.innerHTML = (H.commitments || []).map(function (c) { return "<li>" + esc(c) + "</li>"; }).join("");
-    var ret = $('[data-render="host-return"]');
-    if (ret) ret.textContent = H.inReturn || "";
-  }
-
-  function renderFounder() {
-    var F = C.founder;
-    var root = $('[data-render="founder"]');
-    if (!F || !root) return;
-    var photo = $(".founder-photo", root);
-    if (F.photo) {
-      photo.classList.remove("is-placeholder");
-      photo.innerHTML = "<img alt=\"\" loading=\"lazy\">";
-      setImage(photo, { src: F.photo, alt: F.name });
-    } else {
-      $(".ph-mark", photo).textContent = (F.name || "A").charAt(0);
-    }
-    $(".founder-bio", root).textContent = F.bio || "";
-    var sign = "<strong>" + esc(F.name) + "</strong>" + (F.title ? " · " + esc(F.title) : "");
-    if (F.link) sign += ' · <a href="' + esc(F.link) + '" target="_blank" rel="noopener">LinkedIn</a>';
-    $(".founder-sign", root).innerHTML = sign;
-  }
-
-  function renderFAQ() {
-    var el = $('[data-render="faq"]');
-    if (!el || !C.faq) return;
-    var t = C.membership && C.membership.tiers && C.membership.tiers[0];
-    var priceText = t && C.membership.showPrices !== false
-      ? priceLine(t) + (t.altPrice ? " (or " + money(t.altPrice) + " / " + (t.altPeriod || "quarter") + ")" : "")
-      : "shared with your invite";
-    el.innerHTML = C.faq.map(function (f) {
-      return "<details><summary>" + esc(f.q) + '</summary><div class="faq-a"><p>' +
-        esc(f.a).replace(/\{\{price\}\}/g, esc(priceText)) + "</p></div></details>";
-    }).join("");
-    $$("details", el).forEach(function (d) {
-      d.addEventListener("toggle", function () {
-        if (d.open) track("faq_open", { question: $("summary", d).textContent });
-      });
-    });
-  }
-
-  function renderLinks() {
-    var L = C.links || {};
-    var c = $('[data-render="contact"]');
-    if (c && L.contactEmail) {
-      c.innerHTML = 'Something else? Write to <a href="mailto:' + esc(L.contactEmail) + '">' + esc(L.contactEmail) + "</a>.";
-    }
-    var ig = $('[data-render="instagram"]');
-    if (ig) { if (L.instagram) ig.href = L.instagram; else ig.remove(); }
-  }
+  });
+  $$("[data-track]").forEach(function (a) {
+    a.addEventListener("click", function () { track(a.getAttribute("data-track"), {}); });
+  });
 
   /* ------------------------------------------------------- CTAs & dialogs */
   var dialogs = { invite: $("#invite-dialog"), newsletter: $("#newsletter-dialog") };
@@ -400,7 +215,7 @@
         $("[data-success-title]", box).textContent = s.title || "Thank you.";
         $("[data-success-body]", box).textContent = s.body || "";
         form.hidden = true;
-        $$(".modal-intro, .kicker, .modal-body > .h2", dialog).forEach(function (el) { el.hidden = true; });
+        $$(".modal-intro, .modal-body > .label, .modal-body > .h2", dialog).forEach(function (el) { el.hidden = true; });
         box.hidden = false;
       }).catch(function (err) {
         track(kind === "invite" ? "invite_form_error" : "newsletter_error", { message: String(err && err.message) });
@@ -483,7 +298,7 @@
   }
 
   function initReveal() {
-    var targets = $$(".section-head, .flow, .asks, .compare, .steps, .four article, .value-list li, .price-single, .price-multi, .slots, .host, .equation, .founder, .faq, .rooms-copy, .for-list-wrap");
+    var targets = $$(".compare, .workflow li, .stages, .asks, .four article, .rhythm, .rooms-copy, .value-list li, .price-grid, .fb-list li, .host, .sources, .founder, .faq");
     targets.forEach(function (el) { el.classList.add("reveal"); });
     if (!("IntersectionObserver" in window)) { targets.forEach(function (el) { el.classList.add("is-in"); }); return; }
     var io = new IntersectionObserver(function (entries) {
@@ -495,15 +310,6 @@
   }
 
   /* ----------------------------------------------------------------- boot */
-  bindText();
-  renderImages();
-  renderHeroMeta();
-  renderPricing();
-  renderFounding();
-  renderHosts();
-  renderFounder();
-  renderFAQ();
-  renderLinks();
   initHeader();
   initReveal();
   initViewTracking();

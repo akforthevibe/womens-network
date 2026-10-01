@@ -1,48 +1,43 @@
 /* ==========================================================================
    DD NETWORK — EDITABLE CONTENT
    --------------------------------------------------------------------------
-   Everything that is likely to change lives in this one file:
-   prices, benefits, founding count, hosts, photos, links, forms, FAQ, hero.
-   Edit the values below and refresh. No build step required.
+   Everything likely to change lives in this one file.
+   After editing, run:   node scripts/build.mjs
+   (Netlify runs this automatically on every deploy.)
+   The build writes this content straight into index.html, so prices, FAQ
+   and hosts are real HTML: visible to search engines, link previews and
+   anyone reading without JavaScript.
    ========================================================================== */
 
 window.DD_CONTENT = {
 
   /* ---------------------------------------------------------------------- */
-  /* LINKS & CONVERSION                                                      */
+  /* LINKS                                                                   */
   /* ---------------------------------------------------------------------- */
   links: {
-    // Leave empty to use the built-in invite form (recommended).
-    // Set to an external URL (e.g. a Typeform) to send every
-    // "Request an Invite" button there instead.
+    // Empty = built-in forms (recommended). A URL = send buttons there instead.
     invite: "",
-    // Same for the newsletter. Empty = built-in form.
     newsletter: "",
-    decodingDraupadi: "https://www.instagram.com/decodingdraupadi/",
-    dais: "",
-    instagram: "https://www.instagram.com/decodingdraupadi/",
-    contactEmail: "hello@decodingdraupadi.com"
+    instagram: "https://www.instagram.com/decodingdraupadi/",  // TODO: confirm
+    contactEmail: "hello@decodingdraupadi.com"                  // TODO: confirm
   },
 
   /* ---------------------------------------------------------------------- */
   /* FORMS                                                                   */
+  /* "netlify" = Netlify Forms. "endpoint" = POST JSON to the URLs below     */
+  /* (Google Apps Script, Formspree, n8n, Make, Zapier…).                    */
   /* ---------------------------------------------------------------------- */
   forms: {
-    // How submissions are delivered:
-    //   "netlify"  — Netlify Forms (works automatically when deployed on Netlify)
-    //   "endpoint" — POST JSON to the URLs below (Google Apps Script, Formspree,
-    //                n8n, Make, Zapier, your own API…)
-    // On localhost / file:// the forms run in demo mode and log to the console.
     mode: "netlify",
     inviteEndpoint: "",
     newsletterEndpoint: "",
     inviteSuccess: {
       title: "Thank you. We've got it.",
-      body: "Every request is read personally. If it looks like a fit for the founding cohort, we'll be in touch to set up a short conversation."
+      body: "A person will read this, not a filter. If it looks like a fit for the founding cohort, we'll be in touch to set up a short conversation. If it isn't the right moment, we'll tell you that too."
     },
     newsletterSuccess: {
       title: "You're on the list.",
-      body: "We'll write when there's something worth saying: new rooms, founding updates and the occasional good introduction story."
+      body: "Occasional notes on new rooms, interesting women and what we're building. No weekly content dump."
     }
   },
 
@@ -52,7 +47,7 @@ window.DD_CONTENT = {
   analytics: {
     ga4Id: "",            // e.g. "G-XXXXXXXXXX"
     plausibleDomain: "",  // e.g. "network.decodingdraupadi.com"
-    debug: false          // true = log every tracked event to the console
+    debug: false
   },
 
   /* ---------------------------------------------------------------------- */
@@ -60,100 +55,88 @@ window.DD_CONTENT = {
   /* ---------------------------------------------------------------------- */
   hero: {
     headline: "Meet the women who can change <em>what's next.</em>",
-    intro: "DD Network is a curated professional network for women in marketing, media and creative work who are figuring out their next move.",
-    support: "You tell us what you're trying to do. We help you find the people who can help.",
-    meta: ["Founding membership", "Mumbai", "Limited first cohort"],
+    mechanism: "Tell us what you're trying to make happen. We'll help you find the women who can help.",
+    intro: "DD Network is a professional network built around introductions, for women in marketing, media and creative work in Mumbai.",
     image: {
       src: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1400&q=80",
       alt: "A long table set for a small dinner, glasses catching the evening light",
-      caption: "Dinner for ten. Everyone at the table chosen for a reason."
+      caption: "Ten women at a table. Each one there for a reason."
     }
   },
 
+  // The short credibility line that sits directly under the hero.
+  credibility: "<strong>Built by Decoding Draupadi.</strong> For 3+ years, DD has built a community of working women through media, events and conversation. DD Network turns those relationships into introductions.", // TODO: confirm "3+ years"
+
   /* ---------------------------------------------------------------------- */
-  /* MEMBERSHIP / PRICING                                                    */
-  /* Pricing is being tested at ~₹7,500 / ₹12,000 / ₹18,000.                 */
-  /* One tier = single founding layout. Two or three = side-by-side.         */
+  /* MEMBERSHIP & PRICE                                                      */
+  /* One tier = single founding price. Add tiers to show side-by-side.       */
   /* ---------------------------------------------------------------------- */
   membership: {
     currency: "₹",
-    showPrices: true,       // false = "Founding rate shared with your invite"
     tiers: [
       {
         name: "Founding Member",
-        price: 12000,
+        price: 12000,          // TODO: final founding price (testing 7,500 / 12,000 / 18,000)
         period: "year",
-        altPrice: 3500,       // set to null to hide the quarterly option
-        altPeriod: "quarter",
-        forWhom: "For women who want the network working for them all year.",
-        extras: []            // tier-specific extras (used only with 2+ tiers)
+        forWhom: "One membership. Everything below included. No upsell to unlock the useful part."
       }
-      /*
-      Example of a second tier — uncomment and edit to show side-by-side:
-      ,{
-        name: "Founding Member + Rooms",
-        price: 18000,
-        period: "year",
-        altPrice: null,
-        forWhom: "For women who want to be in a room every month.",
-        extras: ["A seat at one small dinner every month", "Priority on workshops"]
-      }
-      */
     ],
     included: [
-      "Personal onboarding",
-      "Access to DD Network",
-      "Monthly member asks",
+      "Your monthly ask",
       "Curated, double opt-in introductions",
-      "Member-to-member opportunities",
       "A welcome dinner",
-      "Access to small DD rooms",
-      "Member pricing on workshops",
-      "Founding Member status",
-      "Early access to future DD Network experiences"
+      "Monthly small rooms, matched to your context",
+      "Member pricing on workshops and DD experiences",
+      "Access to the founding network",
+      "Founding Member status"
     ],
-    note: "Founding members keep their founding rate for two years."
+    note: "Your founding rate is locked for two years. You only pay once you've been accepted."
   },
 
+  // "Your year as a member": the cadence. TODO: confirm every line.
+  rhythm: [
+    { when: "Every month",          what: "Your ask",        detail: "One question: what are you trying to make happen?" },
+    { when: "When there's a match", what: "Introductions",   detail: "Proposed by us, agreed by both of you. No quota. One useful introduction beats five polite ones." },
+    { when: "When you join",        what: "Welcome dinner",  detail: "Included. Your first room, with other new members." },
+    { when: "Every month",          what: "A small room",    detail: "A dinner or session of 8–12 women. You're invited to the ones that fit your context." },
+    { when: "Through the year",     what: "Workshops",       detail: "Practical sessions with women from the network and Dais, at member pricing." }
+  ],
+
   /* ---------------------------------------------------------------------- */
-  /* FOUNDING MEMBERS                                                        */
-  /* Add members as they join; their slot fills with name + photo.           */
+  /* FOUNDING 50                                                             */
   /* ---------------------------------------------------------------------- */
   founding: {
     total: 50,
-    showCount: false,        // true = show "12 of 50 places taken"
-    members: [
-      // { name: "Name Surname", role: "Brand Director", photo: "assets/img/members/name.jpg" }
-    ],
+    taken: 0,               // update as members are accepted
+    showTaken: false,       // true = "12 of 50 places taken"
     benefits: [
-      "Founding Member status, permanently",
-      "Your founding price, locked for two years",
-      "Early access to every new DD experience",
-      "A say in the rituals the network is built on",
-      "Priority access to future Circles",
-      "Two invitations to bring women you rate into the network"
+      { title: "Founding Member status", detail: "Permanently. You were here first, and the network will know it." },
+      { title: "Your price, locked for two years", detail: "Whatever membership costs later, yours doesn't move." },
+      { title: "First access to new rooms", detail: "Every new dinner, workshop and Circle opens to founding members first." },
+      { title: "Priority on introductions", detail: "When a new member joins who fits your ask, you hear first." },
+      { title: "The founders' dinner", detail: "An evening for the first 50 and the Founding Hosts." },
+      { title: "Two invitations", detail: "Bring two women you rate into the network, without the waitlist." }
     ]
   },
 
   /* ---------------------------------------------------------------------- */
   /* FOUNDING HOSTS                                                          */
-  /* photo: "" shows an elegant placeholder until a portrait is added.       */
+  /* name: "" shows "Announcing soon". Add photo paths as hosts confirm.     */
   /* ---------------------------------------------------------------------- */
   hosts: {
-    range: "10–15",          // shown in the copy: "10–15 Founding Hosts"
+    range: "10–15",
+    profiles: [
+      { name: "", role: "Founder", line: "I've built the thing you're thinking of building.", room: "Building an independent practice", photo: "" },
+      { name: "", role: "Marketing Leader", line: "I've made the move you're trying to make.", room: "Agency to brand, without starting over", photo: "" },
+      { name: "", role: "Creative Director", line: "I've hired the freelancers you're trying to find.", room: "Hiring well when you're small", photo: "" },
+      { name: "", role: "Editor & Speaker", line: "I know which stages are worth standing on.", room: "Getting on the right stages", photo: "" }
+    ],
     commitments: [
       "Host one small dinner",
-      "Take two or three relevant introduction requests",
+      "Take two or three introduction requests",
       "Hold one office-hours session",
       "Refer two women to the network",
-      "Share one member story or interview"
-    ],
-    inReturn: "In return, hosts receive complimentary or discounted membership and visibility across Decoding Draupadi and Dais.",
-    profiles: [
-      { name: "", role: "Founder", line: "I've built the thing you're thinking of building.", photo: "" },
-      { name: "", role: "Creative Director", line: "I've hired the freelancers you're trying to find.", photo: "" },
-      { name: "", role: "Marketing Leader", line: "I've made the move you're trying to make.", photo: "" },
-      { name: "", role: "Editor & Speaker", line: "I know which stages are worth standing on.", photo: "" }
+      "Share one member story"
     ]
   },
 
@@ -161,96 +144,53 @@ window.DD_CONTENT = {
   /* FOUNDER                                                                 */
   /* ---------------------------------------------------------------------- */
   founder: {
-    name: "Anshika",
+    name: "Anshika Kushwaha",
     title: "Founder, Decoding Draupadi",
-    // TODO: replace with Anshika's own short bio (2–3 sentences).
-    bio: "Anshika started Decoding Draupadi to talk honestly about the lives of urban working women. Years of conversations later, she kept noticing the same thing: the women in her community could solve most of each other's problems, if only they knew each other. DD Network is her answer.",
-    photo: "",               // e.g. "assets/img/anshika.jpg"
-    link: ""                 // e.g. LinkedIn URL
+    bio: "For years, Anshika has been building relationships with working women across Mumbai through content, community and conversation. DD Network is the next layer: making those relationships useful when someone needs a person, an opportunity or a way in.",
+    photo: "",              // TODO: e.g. "assets/img/anshika.jpg" (strongly recommended)
+    link: ""                // e.g. LinkedIn URL
   },
 
   /* ---------------------------------------------------------------------- */
-  /* IMAGERY (replace any src with a local path or another URL)              */
+  /* IMAGERY: any URL or local path (e.g. assets/img/dinner.jpg)             */
   /* ---------------------------------------------------------------------- */
   images: {
-    roomsA: {
-      src: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1400&q=80",
-      alt: "A warm, low-lit restaurant interior before guests arrive"
-    },
-    roomsB: {
-      src: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=900&q=80",
-      alt: "A woman mid-conversation in a bright workspace"
-    },
-    roomsC: {
-      src: "https://images.unsplash.com/photo-1511920170033-f8396924c348?auto=format&fit=crop&w=900&q=80",
-      alt: "Coffee on a table, close up"
-    },
-    city: {
-      src: "https://images.unsplash.com/photo-1570168007204-dfb528c6958f?auto=format&fit=crop&w=1800&q=80",
-      alt: "Mumbai's sea link at dusk"
-    },
-    work: {
-      src: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1200&q=80",
-      alt: "A quiet, light-filled studio space"
-    }
+    roomsA: { src: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1600&q=80", alt: "A warm, low-lit dining room before guests arrive" },
+    roomsB: { src: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=900&q=80",  alt: "A woman mid-conversation in a bright workspace" },
+    who:    { src: "https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?auto=format&fit=crop&w=1000&q=80", alt: "Two women talking across a table" }
   },
 
   /* ---------------------------------------------------------------------- */
-  /* FAQ                                                                     */
+  /* FAQ: {{price}} is replaced with the founding price.                     */
   /* ---------------------------------------------------------------------- */
   faq: [
-    {
-      q: "Is this a women's networking group?",
-      a: "It's a professional network for women, but it isn't a group you join and then wait in. The point is introductions: you tell us what you're working on, we find the women who can help, and we make the connection."
-    },
-    {
-      q: "Who can join?",
-      a: "Established women in marketing, media and creative work, starting in Mumbai. Typically you've got real experience behind you and a next move in front of you."
-    },
-    {
-      q: "Is membership application-only?",
-      a: "Yes. You request an invite, we read it personally, and if it looks like a fit we'll have a short conversation before offering a place."
-    },
-    {
-      q: "How are members selected?",
-      a: "For how useful the room will be to each other. We look at what you're working towards, what you can offer, and whether the network as it stands can genuinely help. It isn't about titles or follower counts."
-    },
-    {
-      q: "What happens after I join?",
-      a: "A personal onboarding call, an invitation to a welcome dinner, and your first monthly ask. From there, introductions and rooms follow based on what you're trying to make happen."
-    },
-    {
-      q: "How do introductions work?",
-      a: "You share an ask. We look through the network and suggest people. Both sides say yes before anyone is introduced. Then we follow up to see what happened."
-    },
-    {
-      q: "Are the dinners included?",
-      a: "Your welcome dinner is included. Small dinners and rooms are open to members; some are included and some are ticketed at member pricing. We'll always say which is which upfront."
-    },
-    {
-      q: "Do I have to attend events?",
-      a: "No. Rooms are one way relationships start, not an attendance requirement. Some members mostly use introductions. That's fine."
-    },
-    {
-      q: "Can I invite someone?",
-      a: "Founding members get two invitations to bring in women they rate. Anyone else can request an invite directly."
-    },
-    {
-      q: "What does founding member mean?",
-      a: "You're one of the first 50. You keep your founding rate for two years, get early access to everything new, and help shape how the network works."
-    },
-    {
-      q: "How much does it cost?",
-      // {{price}} is replaced automatically with the first tier's price.
-      a: "Founding membership is {{price}}. You're paying for curation, matching and introductions, not for a feed or a directory."
-    },
-    {
-      q: "Where are the first members based?",
-      a: "Mumbai. The first rooms happen here. We'll open to other cities once the network here is genuinely useful."
-    },
-    {
-      q: "Is this only for people in marketing and media?",
-      a: "To start, mostly, along with design, content, communications and adjacent creative work. A tight starting point makes for better introductions. We'll widen it carefully."
-    }
+    { q: "Is this a women's networking group?",
+      a: "No. It's a professional network built around introductions. You don't join and then hope to bump into the right person. You tell us what you need, and we find her." },
+    { q: "Who can apply?",
+      a: "Established women in marketing, media and creative work in Mumbai: real experience behind you, a next move in front of you, and something you can offer another woman." },
+    { q: "Is membership paid?",
+      a: "Yes. Founding membership is {{price}}. You only pay once you've been accepted." },
+    { q: "What does membership include?",
+      a: "Your monthly ask, curated introductions, a welcome dinner, monthly small rooms, member pricing on workshops, and Founding Member status. One price, everything included." },
+    { q: "How are members selected?",
+      a: "Personally, for how useful the room will be to one another. We look at what you're working towards and what you can offer. Not titles, not follower counts." },
+    { q: "What happens after I apply?",
+      a: "We read every request ourselves. If it looks like a fit, we'll set up a short conversation. If it isn't the right moment, we'll tell you." },
+    { q: "How do introductions work?",
+      a: "You share your ask. We look through the network ourselves (people, not an algorithm) and propose someone. Each of you sees why, and both of you say yes before anyone is connected. Then we follow up." },
+    { q: "How often will I get introductions?",
+      a: "Whenever there's a genuine match. There's no quota, because one useful introduction beats five polite ones. Your ask stays open as new women join." },
+    { q: "What if there's no one right for me yet?",
+      a: "We'll tell you honestly rather than send a filler introduction. Your ask stays open, and as the network grows, so do the odds." },
+    { q: "Do I have to attend events?",
+      a: "No. Rooms are where relationships often start, but they're not compulsory. Some members mostly use introductions." },
+    { q: "Is there a WhatsApp group?",
+      a: "No. There's no group chat to keep up with and no feed to check. Introductions happen one to one. Rooms are announced to the women they're meant for." },
+    { q: "Where is DD Network based?",
+      a: "Mumbai. The first cohort and the first rooms are here." },
+    { q: "Can women outside Mumbai join?",
+      a: "Not in the founding cohort, because the rooms are in Mumbai. Join the DD Network letter and we'll write when we open to more cities." },
+    { q: "Is it only for marketing and media?",
+      a: "To start, mostly, along with design, content, communications and adjacent creative work. A focused start makes for better introductions." }
   ]
 };
