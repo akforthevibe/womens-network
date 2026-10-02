@@ -1,96 +1,117 @@
-# DD Network — Website
+# DD Network: website
 
-Single-page landing site for **DD Network**, the professional relationship network by Decoding Draupadi.
+A single-page site for **DD Network**, a curated professional network for women by Decoding Draupadi. It also has a privacy page and a fallback thank-you page.
 
-Plain HTML, CSS and JavaScript, with no framework. One tiny build script writes the editable content into `index.html`, so the price, FAQ and hosts are real HTML. That means search engines, link previews and AI tools can all read them, and so can anyone with JavaScript off.
+It is plain HTML, CSS and JavaScript with no framework. A small build script writes the values still to be confirmed (prices, seats, dates, email) into the HTML, so they're real text that search engines and link previews can read.
 
 ```
-index.html             Page structure and editorial copy (content blocks are filled by the build)
-assets/js/content.js   ← EDIT THIS: price, benefits, cadence, Founding 50, hosts, founder, photos, links, FAQ, hero
-scripts/build.mjs      Writes content.js into index.html:  node scripts/build.mjs
-assets/js/render.js    The HTML templates the build uses
-assets/css/styles.css  Design system (palette, type, layout)
-assets/js/main.js      CTAs, forms, analytics (no need to edit)
-assets/img/            Put your own photos here
+index.html                         The page: structure and final copy
+privacy.html                       Privacy note (DPDP Act, plain language)
+thank-you.html                     Only shown if a form is sent with JavaScript off
+assets/js/content.js               ← EDIT THIS: placeholders, hosts, links, analytics, photos
+assets/css/styles.css              Design system (tokens at the top)
+assets/js/main.js                  Nav, two-step form, validation, UTM capture, analytics
+assets/js/render.js                Templates the build uses
+scripts/build.mjs                  Writes content.js into the HTML:   npm run build
+scripts/images.mjs                 Fetches and treats the Unsplash photos:  npm run images
+netlify/functions/submission-created.mjs   Sends form entries to Airtable / Beehiiv
 ```
 
-**After editing `content.js`, run `node scripts/build.mjs`** (Node 16+). Netlify runs it automatically on every deploy (see `netlify.toml`). Blocks in `index.html` between `<!--@name-->` and `<!--/@-->` are generated, so edit `content.js` rather than those blocks.
-
-Palette: Demonic Red `#BB2233` · Atomic Orange `#FB8B04` · Autumn White `#FAE3D0` · Firmament Blue `#0C1124` (tokens at the top of `styles.css`).
-
-## Preview locally
+## Quick start
 
 ```bash
-python3 -m http.server 8000
-# open http://localhost:8000
+npm install          # only needed for the image script (sharp)
+npm run images       # download photos → assets/img/*.webp and og.jpg (needs internet)
+npm run build        # write content.js values into the HTML
+npm run serve        # http://localhost:8000
 ```
 
-On `localhost`, forms run in **demo mode**: nothing is sent, and the submission and every analytics event are logged to the browser console.
+On `localhost`, forms run in **demo mode**: nothing is sent, and each submission and analytics event is logged to the browser console.
 
-## Editing content (`assets/js/content.js`)
+Generated blocks in the HTML sit between `<!--@name-->` and `<!--/@-->`. Edit `content.js`, not those blocks.
 
-| What | Where in `content.js` |
-|---|---|
-| Hero headline and copy | `hero` (`<em>` in the headline gives the red italic) |
-| Credibility line under the hero | `credibility` |
-| Membership price | `membership.tiers[0].price` and `period` (also feeds the hero line and the FAQ) |
-| Multiple tiers | add objects to `membership.tiers`; the page switches to side-by-side tiers automatically |
-| What's included | `membership.included` |
-| "Your year as a member" cadence | `rhythm` |
-| Founding places | `founding.total`; set `founding.taken` and `showTaken: true` to show "38 of 50 places left" |
-| Founding benefits | `founding.benefits` |
-| Founding hosts | `hosts.profiles`: `{ name, role, line, room, photo }`. An empty `name` shows "Announcing soon" |
-| Founder | `founder` (bio, photo, LinkedIn); with a photo, the layout becomes portrait + text |
-| Section photos | `images.*` (any URL or a local path such as `assets/img/dinner.jpg`) |
-| FAQ | `faq` array. `{{price}}` is replaced with the live price |
-| CTA links | `links.invite` / `links.newsletter`: leave empty for the built-in forms, or set a URL (e.g. Typeform) |
+## Placeholders to confirm
 
-Photos crop automatically (`object-fit: cover`), so replacing an image never breaks the layout. If an image fails to load, its slot shows a warm tonal block instead of a broken image.
+All of these live in `placeholders` in `assets/js/content.js`. To see every placeholder highlighted on the page, add **`?placeholders`** to the URL (e.g. `https://ddnetwork.in/?placeholders`).
 
-**Note:** the Unsplash photos are starting points only. Replace them with real DD dinners and rooms as soon as you have them.
+| Key | Current value | Notes |
+|---|---|---|
+| `foundingSeats` | 50 | Plan says 40–50 |
+| `memberPrice` / `memberUsualPrice` / `memberQuarterly` | 12,000 / 18,000 / 3,500 | Final after the waitlist price test |
+| `circlePrice` / `circleOpening` | 40,000 / early 2027 | Plan range ₹30–50k |
+| `hostCount` | 10–15 | |
+| `intakeClose` | *(empty)* | Empty shows "Intake closes when seats are filled." |
+| `replyDays` | 7 | |
+| `refundDays` | 90 | **The refund policy still needs a decision** (FAQ: "What if it isn't useful for me?") |
+| `communitySize` | 7,000+ | |
+| `contactEmail` | hello@decodingdraupadi.com | **Placeholder, please confirm** |
+| `domain` | ddnetwork.in | **Placeholder.** Used for the canonical URL and share image |
 
-## Forms
+Also confirm the links in `links` (Decoding Draupadi, Draupadi on the Dais, Instagram, LinkedIn).
 
-There are two separate conversion paths:
+**Founding Hosts:** add `{ name, title }` objects to `hosts`. The row of names stays hidden while the list is empty.
 
-- **Request an invite**: name, email, LinkedIn and what you do, then the two core questions: *what are you trying to make happen next?* and *what could you help another woman with?*
-- **The DD Network letter**: name and email.
+## Photos
 
-Every submission also carries:
+The five photo slots (hero, paying for, hosts, who it's for, sign-up) are set in `images` in `content.js` as Unsplash photo ids. `npm run images`:
 
-- `source`: which button opened the form (`hero`, `pricing`, `founding`, `final`, `sticky`, `header`…)
-- `utm`: any UTM parameters the visitor arrived with
-- `submitted_at` and `page`
+- downloads each one (with `UNSPLASH_ACCESS_KEY` set, through the official API, which also credits the download to the photographer),
+- crops it to the slot's shape, focusing on the most interesting area,
+- applies the one house treatment (warm, slightly desaturated colour),
+- writes WebP files at 640, 1000 and 1600px wide, plus the 1200×630 share image `og.jpg` (hero photo + headline) and `apple-touch-icon.png`.
 
-`/#invite` and `/#newsletter` open the forms directly, which is useful for Instagram bios and WhatsApp links.
+Commit the files in `assets/img/` afterwards. Netlify also runs the script on deploy, and it only fetches photos that are missing. Everything below the hero lazy-loads. Until a photo exists, its slot shows a plain warm tone, never a broken image.
 
-Set the delivery method in `forms.mode`:
+**The current ids are first picks chosen from search results. They have not been checked by eye** (the build machine couldn't reach Unsplash). Look at each one against the brief: candid, warm, faces not the focus unless South Asian women, and no handshakes, laptops or posed groups. Swap any that miss. Credits update in the footer automatically, but check that each `credit` name matches the photographer.
 
-1. **Netlify Forms** (`"netlify"`, the default). Deploy on Netlify and the `invite` and `newsletter` forms appear in the Netlify dashboard automatically. Add email notifications or Zapier/Slack from there.
-2. **Any endpoint** (`"endpoint"`). Set `forms.inviteEndpoint` and `forms.newsletterEndpoint`. Each submission is POSTed as JSON, so it works with Google Apps Script (to a Google Sheet), Formspree, n8n, Make, Zapier webhooks, Airtable via a webhook, or your own API.
+## Forms and where submissions go
+
+There are two forms, both handled by **Netlify Forms**, with a honeypot field for spam (no visible captcha):
+
+- **`invite`**: two steps on screen (About you → What you're working on), with inline errors in plain words. Answers stay in place if sending fails. Each submission also records `cta_location` (which button she clicked), the `utm_*` parameters (kept for the visit even if she lands on another URL first), `referrer` and `submitted_at`.
+- **`newsletter`**: email plus an optional first name. It appears in the sign-up section and again in the thank-you state (hidden if she has already subscribed).
+
+Netlify then runs `netlify/functions/submission-created.mjs`, which:
+
+- adds each application as a row in **Airtable** (table `Applications`), and
+- adds newsletter sign-ups to **Beehiiv** if it is configured, and always as a row in the Airtable table `Newsletter` (so they can be imported into Substack, which has no public API).
+
+Set these in Netlify → Site configuration → Environment variables: `AIRTABLE_TOKEN`, `AIRTABLE_BASE_ID`, and optionally `AIRTABLE_INVITES_TABLE`, `AIRTABLE_NEWSLETTER_TABLE`, `BEEHIIV_API_KEY` and `BEEHIIV_PUBLICATION_ID`. Create the Airtable columns with the names used in the function (or let `typecast` create select options). Every submission is also kept in the Netlify dashboard, so nothing is lost if Airtable is down.
+
+**Email notification:** Netlify → Forms → Form notifications → add an email notification for the `invite` form.
+
+**Deep links** (useful for Instagram bios and WhatsApp):
+- `/#request` opens the sign-up section
+- `/?as=host#request` opens it with **Founding Host** pre-selected (the Hosts section link does the same)
+- `/?plan=circle#request` opens it with **Circle waitlist** pre-selected
 
 ## Analytics
 
-Set `analytics.ga4Id` (Google Analytics 4) and/or `analytics.plausibleDomain`. Events are also pushed to `window.dataLayer` for Google Tag Manager.
+Set `analytics.ga4Id` and/or `analytics.plausibleDomain` in `content.js`. Events also go to `window.dataLayer` for Google Tag Manager.
 
-| Event | Fires when |
+| Event | When |
 |---|---|
-| `page_view` | page loads (with UTM) |
-| `cta_click` | any CTA is clicked (`cta`, `location`) |
-| `request_invite_click` | a Request an Invite button is clicked (`location`) |
-| `newsletter_click` | a newsletter button is clicked (`location`) |
-| `see_how_click` | the hero's "See how it works" link is clicked |
-| `invite_form_open` / `invite_form_start` | invite form is opened / first typed into |
-| `invite_form_submit` | invite request is sent (`source`) |
-| `newsletter_signup` | newsletter sign-up is sent (`source`) |
-| `pricing_view` | the membership section scrolls into view |
-| `section_view` | each section is seen (once per visit) |
-| `faq_open` | an FAQ question is opened |
-| `invite_form_error` / `newsletter_error` | a submission fails |
+| `request_invite_click` | any Request an invite button; `location` = nav, hero, tier_member, founding, hosts, sticky |
+| `invite_step1_complete` | step 1 of the form passes validation |
+| `invite_submitted` | an application is sent (`location`, `applying_as`) |
+| `newsletter_submitted` | a newsletter sign-up is sent (`location`) |
+| `newsletter_click` | a "Get the newsletter" link is clicked |
+| `circle_waitlist_click` | "Join the Circle waitlist" |
+| `companies_email_click` | "Get in touch" on DD for Companies |
+| `pricing_view`, `faq_open`, `invite_error`, `newsletter_error` | as named |
 
-CTA conversion = `invite_form_submit ÷ request_invite_click`, broken down by `location`/`source` to see which placement converts best.
+## Design
 
-## Deploy
+Off-white `#F7F4EF`, near-black `#1C1A19` (also used for the dark Founding band), and one accent, terracotta `#8C3B2A`. A lighter tint of the same hue is used for small text on the dark band so it meets AA contrast. Headlines use Fraunces and body text uses Inter. The layout is a 12-column grid with a 1,120px maximum width. Sections are separated by space and 1px rules, and only the pricing tiers are cards. Motion is a 280ms fade-up, switched off when the visitor prefers reduced motion. The layout was checked at 375, 768 and 1,440px.
 
-- **Netlify:** connect this repo. `netlify.toml` already sets the build command (`node scripts/build.mjs`) and the publish directory (the repo root).
-- **Anything else:** run the build, then upload the files. Switch `forms.mode` to `"endpoint"` first.
+## Launch checklist
+
+- [ ] Design approved (desktop and mobile)
+- [ ] Placeholders confirmed (table above), refund policy decided
+- [ ] Photos checked by eye, `npm run images` run, `assets/img` committed
+- [ ] Airtable env vars set; email notification on; both forms tested end to end on the live site
+- [ ] Newsletter tool connected (Beehiiv keys, or Substack import from Airtable)
+- [ ] GA4 or Plausible set; events checked in real time
+- [ ] Real-phone check (Instagram and WhatsApp in-app browsers)
+- [ ] Domain connected and HTTPS on; `domain` set in content.js
+- [ ] Lighthouse mobile run (target 90+)

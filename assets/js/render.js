@@ -1,158 +1,124 @@
 /* ==========================================================================
-   DD NETWORK — Renderers
-   Turn content.js into HTML. Used by scripts/build.mjs to write the content
-   straight into index.html (so it's real, crawlable HTML).
+   DD NETWORK: templates used by scripts/build.mjs
+   Generated blocks in the HTML look like  <!--@name-->…<!--/@-->
+   and are rewritten from assets/js/content.js on every build.
    ========================================================================== */
-(function (root, factory) {
-  if (typeof module === "object" && module.exports) module.exports = factory();
-  else root.DDRender = factory();
-})(this, function () {
-  "use strict";
+"use strict";
 
-  function esc(s) {
-    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
-      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
-    });
+// Photo slots: aspect ratio [w, h] and the `sizes` hint for the browser.
+const SLOTS = {
+  hero:    { ratio: [4, 5],  sizes: "(min-width: 960px) 520px, 100vw", eager: true },
+  paying:  { ratio: [4, 5],  sizes: "(min-width: 960px) 420px, 100vw" },
+  hosts:   { ratio: [4, 5],  sizes: "(min-width: 960px) 460px, 100vw" },
+  who:     { ratio: [16, 9], sizes: "(min-width: 1120px) 1120px, 100vw" },
+  request: { ratio: [4, 5],  sizes: "(min-width: 960px) 360px, 100vw" }
+};
+const WIDTHS = [640, 1000, 1600];
+
+function esc(s) {
+  return String(s == null ? "" : s)
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+function image(key, C) {
+  const img = (C.images || {})[key];
+  const slot = SLOTS[key];
+  if (!img || !slot) return "";
+  const [w, h] = slot.ratio;
+  const src = (width) => `assets/img/${key}-${width}.webp`;
+  const srcset = WIDTHS.map((width) => `${src(width)} ${width}w`).join(", ");
+  const loading = slot.eager ? 'fetchpriority="high"' : 'loading="lazy"';
+  return `<img src="${src(1000)}" srcset="${srcset}" sizes="${slot.sizes}" width="${w * 200}" height="${h * 200}" alt="${esc(img.alt)}" ${loading} decoding="async">`;
+}
+
+function mail(C) {
+  return (C.placeholders || {}).contactEmail || "";
+}
+
+const blocks = {
+  config(C) {
+    const P = C.placeholders || {};
+    const data = { analytics: C.analytics || {}, contactEmail: P.contactEmail || "", replyDays: P.replyDays || "7" };
+    return `<script id="dd-config" type="application/json">${JSON.stringify(data).replace(/</g, "\\u003c")}</script>`;
+  },
+
+  meta(C) {
+    const domain = (C.placeholders || {}).domain;
+    if (!domain) return "";
+    const url = `https://${domain}/`;
+    return [
+      `<link rel="canonical" href="${esc(url)}">`,
+      `<meta property="og:url" content="${esc(url)}">`,
+      `<meta property="og:image" content="${esc(url)}assets/img/og.jpg">`,
+      `<meta name="twitter:image" content="${esc(url)}assets/img/og.jpg">`
+    ].join("\n  ");
+  },
+
+  intakeLine(C) {
+    const d = (C.placeholders || {}).intakeClose;
+    return d
+      ? `Intake closes <span class="ph">${esc(d)}</span> or when seats are filled.`
+      : `Intake closes when seats are filled.`;
+  },
+
+  hosts(C) {
+    const list = (C.hosts || []).filter((h) => h && h.name);
+    if (!list.length) return "";
+    return `<ul class="host-names" aria-label="Founding Hosts">${list
+      .map((h) => `<li><span class="host-name">${esc(h.name)}</span><span class="host-title">${esc(h.title)}</span></li>`)
+      .join("")}</ul>`;
+  },
+
+  companiesButton(C) {
+    const m = mail(C);
+    const href = `mailto:${m}?subject=${encodeURIComponent("DD for Companies")}`;
+    return `<a class="btn btn-outline" href="${esc(href)}" data-event="companies_email_click">Get in touch</a>`;
+  },
+
+  contactLink(C) {
+    const m = mail(C);
+    return `<a href="mailto:${esc(m)}" data-event="contact_email_click">Contact (<span class="ph">${esc(m)}</span>)</a>`;
+  },
+
+  contactEmail(C) {
+    const m = mail(C);
+    return `<a href="mailto:${esc(m)}"><span class="ph">${esc(m)}</span></a>`;
+  },
+
+  ddLinks(C) {
+    const L = C.links || {};
+    return `<a href="${esc(L.decodingDraupadi)}" rel="noopener" target="_blank">Decoding Draupadi</a><span aria-hidden="true"> · </span><a href="${esc(L.draupadiOnTheDais)}" rel="noopener" target="_blank">Draupadi on the Dais</a>`;
+  },
+
+  social(C) {
+    const L = C.links || {};
+    return `<li><a href="${esc(L.instagram)}" rel="noopener" target="_blank">Instagram</a></li><li><a href="${esc(L.linkedin)}" rel="noopener" target="_blank">LinkedIn</a></li>`;
+  },
+
+  credits(C) {
+    const imgs = C.images || {};
+    const names = Object.keys(imgs)
+      .map((k) => imgs[k])
+      .filter((i) => i && i.unsplash)
+      .map((i) => `<a href="https://unsplash.com/photos/${esc(i.unsplash)}?utm_source=dd_network&amp;utm_medium=referral" rel="noopener" target="_blank">${esc(i.credit || "Unsplash")}</a>`);
+    if (!names.length) return "";
+    return `Photographs by ${names.join(", ")} on <a href="https://unsplash.com/?utm_source=dd_network&amp;utm_medium=referral" rel="noopener" target="_blank">Unsplash</a>.`;
   }
-  function pad(n) { return n < 10 ? "0" + n : String(n); }
-  function money(C, n) { return (C.membership.currency || "₹") + Number(n).toLocaleString("en-IN"); }
-  function get(C, path) {
-    return path.split(".").reduce(function (o, k) { return o == null ? undefined : o[k]; }, C);
+};
+
+function render(name, C) {
+  if (name.startsWith("ph:")) {
+    const v = (C.placeholders || {})[name.slice(3)];
+    if (v == null) throw new Error(`Unknown placeholder: ${name}`);
+    return `<span class="ph">${esc(v)}</span>`;
   }
-  function priceText(C) {
-    var t = C.membership.tiers[0];
-    return money(C, t.price) + " a " + t.period;
-  }
-  var ONERR = ' onerror="this.parentNode.classList.add(\'is-failed\')"';
-  function img(data, eager) {
-    if (!data || !data.src) return "";
-    return '<img src="' + esc(data.src) + '" alt="' + esc(data.alt || "") + '"' +
-      (eager ? ' fetchpriority="high"' : ' loading="lazy"') + ' decoding="async"' + ONERR + ">";
-  }
+  if (name.startsWith("img:")) return image(name.slice(4), C);
+  if (!blocks[name]) throw new Error(`Unknown block: ${name}`);
+  return blocks[name](C);
+}
 
-  var R = {
-    // Raw (trusted) HTML from content.js, e.g. hero.headline with <em>
-    html: function (C, path) { return get(C, path) || ""; },
-    text: function (C, path) { return esc(get(C, path)); },
-    img: function (C, path) { return img(get(C, path)); },
+function apply(html, C) {
+  return html.replace(/<!--@([\w:]+)-->[\s\S]*?<!--\/@-->/g, (_, name) => `<!--@${name}-->${render(name, C)}<!--/@-->`);
+}
 
-    heroImage: function (C) {
-      var i = C.hero.image;
-      return img(i, true) + (i && i.caption ? "<figcaption>" + esc(i.caption) + "</figcaption>" : "");
-    },
-
-    heroMeta: function (C) {
-      var parts = [
-        "Founding membership " + priceText(C),
-        C.founding.total + " places",
-        "Mumbai"
-      ];
-      return parts.map(esc).join('<span class="dot" aria-hidden="true">·</span>');
-    },
-
-    rhythm: function (C) {
-      return (C.rhythm || []).map(function (r) {
-        return '<li><p class="rhythm-when">' + esc(r.when) + '</p><p class="rhythm-what">' + esc(r.what) +
-          '</p><p class="rhythm-detail">' + esc(r.detail) + "</p></li>";
-      }).join("");
-    },
-
-    pricing: function (C) {
-      var M = C.membership, tiers = M.tiers;
-      var inc = '<ul class="includes">' + M.included.map(function (i) { return "<li>" + esc(i) + "</li>"; }).join("") + "</ul>";
-      var cols = tiers.map(function (t, i) {
-        return '<div class="tier">' +
-          '<p class="tier-name">' + esc(t.name) + "</p>" +
-          '<p class="price">' + esc(money(C, t.price)) + '<span class="per">/ ' + esc(t.period) + "</span></p>" +
-          (t.forWhom ? '<p class="tier-for">' + esc(t.forWhom) + "</p>" : "") +
-          '<a class="btn btn-light" href="#invite" data-cta="invite" data-loc="pricing' + (tiers.length > 1 ? "-" + (i + 1) : "") +
-          '" data-tier="' + esc(t.name) + '">Request an invite <span aria-hidden="true">→</span></a>' +
-          "</div>";
-      }).join("");
-      return '<div class="price-grid' + (tiers.length > 1 ? " is-multi" : "") + '">' +
-        '<div class="tiers">' + cols + "</div>" +
-        '<div class="price-includes"><p class="label">Everything included</p>' + inc +
-        (M.note ? '<p class="price-note">' + esc(M.note) + "</p>" : "") + "</div></div>";
-    },
-
-    foundingBenefits: function (C) {
-      return C.founding.benefits.map(function (b, i) {
-        return '<li><span class="fb-n">' + pad(i + 1) + '</span><p class="fb-title">' + esc(b.title) +
-          '</p><p class="fb-detail">' + esc(b.detail) + "</p></li>";
-      }).join("");
-    },
-
-    foundingCounter: function (C) {
-      var F = C.founding, total = F.total, taken = Math.min(F.taken || 0, total);
-      var ticks = "";
-      for (var i = 0; i < total; i++) ticks += '<span class="tick' + (F.showTaken && i < taken ? " is-taken" : "") + '"></span>';
-      var label = F.showTaken
-        ? '<span class="counter-n">' + (total - taken) + '</span><span class="counter-of">of ' + total + " places left</span>"
-        : '<span class="counter-n">' + total + '</span><span class="counter-of">places. The first cohort is being assembled now.</span>';
-      return '<p class="counter">' + label + '</p><div class="ticks" aria-hidden="true">' + ticks + "</div>";
-    },
-
-    hosts: function (C) {
-      return C.hosts.profiles.map(function (h, i) {
-        var named = h.name && h.name.trim();
-        return '<article class="host">' +
-          '<p class="host-n">Host ' + pad(i + 1) + "</p>" +
-          '<figure class="host-photo media' + (h.photo ? "" : " is-placeholder") + '">' +
-          (h.photo ? img({ src: h.photo, alt: h.name }) : "") +
-          "</figure>" +
-          '<p class="host-name' + (named ? "" : " is-tba") + '">' + (named ? esc(h.name) : "Announcing soon") + "</p>" +
-          '<p class="host-role">' + esc(h.role) + "</p>" +
-          '<p class="host-line">“' + esc(h.line) + "”</p>" +
-          (h.room ? '<p class="host-room"><span>Her room</span>' + esc(h.room) + "</p>" : "") +
-          "</article>";
-      }).join("");
-    },
-
-    hostCommitments: function (C) {
-      return C.hosts.commitments.map(function (c) { return "<li>" + esc(c) + "</li>"; }).join("");
-    },
-
-    founder: function (C) {
-      var F = C.founder;
-      var sign = '<p class="founder-sign"><strong>' + esc(F.name) + "</strong> · " + esc(F.title) +
-        (F.link ? ' · <a href="' + esc(F.link) + '" target="_blank" rel="noopener">LinkedIn</a>' : "") + "</p>";
-      var photo = F.photo ? '<figure class="founder-photo media">' + img({ src: F.photo, alt: F.name }) + "</figure>" : "";
-      return '<div class="founder' + (F.photo ? " has-photo" : "") + '">' + photo +
-        '<div><p class="founder-bio">' + esc(F.bio) + "</p>" + sign + "</div></div>";
-    },
-
-    faq: function (C) {
-      var p = priceText(C);
-      return C.faq.map(function (f) {
-        return "<details><summary>" + esc(f.q) + '</summary><div class="faq-a"><p>' +
-          esc(f.a).replace(/\{\{price\}\}/g, esc(p)) + "</p></div></details>";
-      }).join("");
-    },
-
-    faqSchema: function (C) {
-      var p = priceText(C);
-      return '<script type="application/ld+json">' + JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        mainEntity: C.faq.map(function (f) {
-          return { "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a.replace(/\{\{price\}\}/g, p) } };
-        })
-      }).replace(/</g, "\\u003c") + "</script>";
-    },
-
-    contact: function (C) {
-      var m = C.links.contactEmail;
-      return m ? 'Something else? Write to <a href="mailto:' + esc(m) + '">' + esc(m) + "</a>." : "";
-    }
-  };
-
-  /** Replace every <!--@name arg-->…<!--/@--> block in an HTML string. */
-  R.apply = function (html, C) {
-    return html.replace(/<!--@([\w]+)(?: ([\w.]+))?-->[\s\S]*?<!--\/@-->/g, function (m, name, arg) {
-      if (!R[name]) throw new Error("Unknown renderer: " + name);
-      return "<!--@" + name + (arg ? " " + arg : "") + "-->" + R[name](C, arg) + "<!--/@-->";
-    });
-  };
-
-  return R;
-});
+module.exports = { apply, SLOTS, WIDTHS };
