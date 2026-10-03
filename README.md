@@ -1,96 +1,95 @@
-# DD Network — Website
+# DD Network website
 
-Single-page landing site for **DD Network**, the professional relationship network by Decoding Draupadi.
+Single-page site for DD Network, a private professional network for women in Mumbai, by Decoding Draupadi.
 
-Plain HTML, CSS and JavaScript, with no framework. One tiny build script writes the editable content into `index.html`, so the price, FAQ and hosts are real HTML. That means search engines, link previews and AI tools can all read them, and so can anyone with JavaScript off.
-
-```
-index.html             Page structure and editorial copy (content blocks are filled by the build)
-assets/js/content.js   ← EDIT THIS: price, benefits, cadence, Founding 50, hosts, founder, photos, links, FAQ, hero
-scripts/build.mjs      Writes content.js into index.html:  node scripts/build.mjs
-assets/js/render.js    The HTML templates the build uses
-assets/css/styles.css  Design system (palette, type, layout)
-assets/js/main.js      CTAs, forms, analytics (no need to edit)
-assets/img/            Put your own photos here
-```
-
-**After editing `content.js`, run `node scripts/build.mjs`** (Node 16+). Netlify runs it automatically on every deploy (see `netlify.toml`). Blocks in `index.html` between `<!--@name-->` and `<!--/@-->` are generated, so edit `content.js` rather than those blocks.
-
-Palette: Demonic Red `#BB2233` · Atomic Orange `#FB8B04` · Autumn White `#FAE3D0` · Firmament Blue `#0C1124` (tokens at the top of `styles.css`).
-
-## Preview locally
+Built with Astro (static output) and Tailwind CSS. Deploys on Netlify.
 
 ```bash
-python3 -m http.server 8000
-# open http://localhost:8000
+npm install
+npm run dev          # http://localhost:4321
+npm run build        # writes dist/
+npm run check:copy   # zero em dashes, no banned words (run after build, before shipping)
 ```
 
-On `localhost`, forms run in **demo mode**: nothing is sent, and the submission and every analytics event are logged to the browser console.
+On localhost, forms run in demo mode: nothing is sent, and submissions and analytics events are logged to the browser console.
 
-## Editing content (`assets/js/content.js`)
+## Where things live
 
-| What | Where in `content.js` |
-|---|---|
-| Hero headline and copy | `hero` (`<em>` in the headline gives the red italic) |
-| Credibility line under the hero | `credibility` |
-| Membership price | `membership.tiers[0].price` and `period` (also feeds the hero line and the FAQ) |
-| Multiple tiers | add objects to `membership.tiers`; the page switches to side-by-side tiers automatically |
-| What's included | `membership.included` |
-| "Your year as a member" cadence | `rhythm` |
-| Founding places | `founding.total`; set `founding.taken` and `showTaken: true` to show "38 of 50 places left" |
-| Founding benefits | `founding.benefits` |
-| Founding hosts | `hosts.profiles`: `{ name, role, line, room, photo }`. An empty `name` shows "Announcing soon" |
-| Founder | `founder` (bio, photo, LinkedIn); with a photo, the layout becomes portrait + text |
-| Section photos | `images.*` (any URL or a local path such as `assets/img/dinner.jpg`) |
-| FAQ | `faq` array. `{{price}}` is replaced with the live price |
-| CTA links | `links.invite` / `links.newsletter`: leave empty for the built-in forms, or set a URL (e.g. Typeform) |
+```
+src/data/site.ts           Placeholders, links, analytics IDs
+src/data/photos.ts         Every photo by slot, with alt text and photographer credit
+src/pages/index.astro      The page, one component per section in brief order
+src/pages/privacy.astro    Privacy page
+src/pages/thanks.astro     Thank-you page (used only when JavaScript is off)
+src/components/sections/   Nav, Hero, ProofStrip, Network, Who, Membership, Founding,
+                           Hosts, HouseRules, Faq, Request, Footer
+src/components/ui/         Photo frame, highlighted word + squiggle, sparkle, scribble,
+                           arrow, sticker, form field, newsletter
+src/scripts/main.ts        Menu, sticky bar, reveals, deep links, two-step form, analytics
+src/styles/global.css      Tailwind config (colour tokens, fonts) and the design system
+netlify/functions/         submission-created: forwards form entries to Airtable / Beehiiv
+scripts/og.mjs             Builds the Open Graph image and favicons (npm run og)
+scripts/subset-fonts.sh    Builds the trimmed font files in public/fonts
+```
 
-Photos crop automatically (`object-fit: cover`), so replacing an image never breaks the layout. If an image fails to load, its slot shows a warm tonal block instead of a broken image.
+## Placeholders to fill
 
-**Note:** the Unsplash photos are starting points only. Replace them with real DD dinners and rooms as soon as you have them.
+All live in `src/data/site.ts` and show on the page in [brackets] until filled.
+
+| Placeholder | Current value | Notes |
+|---|---|---|
+| Community size in the proof strip | [7,000+] | Confirm the number to cite |
+| Circle opening date | [early 2027] | |
+| Founding intake close date | [date] | |
+| Reply time on applications | [7 days] | |
+| Refund policy | [Refund policy to confirm.] | Needed before launch |
+| Contact email | [email] | Footer, privacy page |
+| Instagram and LinkedIn URLs | [instagram url], [linkedin url] | Footer |
+| Newsletter tool | [Substack or Beehiiv] | See Forms |
+| Founding Host names and photos | "Announcing soon" tiles | Edit the `hosts` list in `src/components/sections/Hosts.astro` |
+| Prices | ₹18,000 founding, ₹25,000 list, ₹65,000 Circle | In `Membership.astro` |
+| Site URL | https://ddnetwork.netlify.app | `site` in `astro.config.mjs`; used for canonical and OG URLs |
+
+## Photos
+
+Each slot in `src/data/photos.ts` takes an Unsplash photo id (or any image URL in `src`), alt text and a credit. Every photo gets the same treatment automatically: black and white, framed, colour block behind, WebP with a responsive srcset, lazy-loaded below the hero.
+
+**Before launch:** look at each photo on the live preview and confirm it fits the brief's rules (candid, ideally South Asian women, no laptops or office stock). Two credits are still `[photographer]`. Then swap in real DD event and host photos as soon as they exist.
 
 ## Forms
 
-There are two separate conversion paths:
+Both forms use **Netlify Forms** and appear in the Netlify dashboard after the first deploy.
 
-- **Request an invite**: name, email, LinkedIn and what you do, then the two core questions: *what are you trying to make happen next?* and *what could you help another woman with?*
-- **The DD Network letter**: name and email.
+- **invite**: two steps with inline validation. Hidden fields record which button opened it (`source`) and any UTM parameters. Deep links `/?as=host#request` and `/?as=company#request` preselect "Applying as". `/?interest=circle#request` preselects DD Circle.
+- **newsletter**: email only.
+- Spam: honeypot field, no captcha.
 
-Every submission also carries:
+Set up in Netlify:
 
-- `source`: which button opened the form (`hero`, `pricing`, `founding`, `final`, `sticky`, `header`…)
-- `utm`: any UTM parameters the visitor arrived with
-- `submitted_at` and `page`
-
-`/#invite` and `/#newsletter` open the forms directly, which is useful for Instagram bios and WhatsApp links.
-
-Set the delivery method in `forms.mode`:
-
-1. **Netlify Forms** (`"netlify"`, the default). Deploy on Netlify and the `invite` and `newsletter` forms appear in the Netlify dashboard automatically. Add email notifications or Zapier/Slack from there.
-2. **Any endpoint** (`"endpoint"`). Set `forms.inviteEndpoint` and `forms.newsletterEndpoint`. Each submission is POSTed as JSON, so it works with Google Apps Script (to a Google Sheet), Formspree, n8n, Make, Zapier webhooks, Airtable via a webhook, or your own API.
+1. **Email notification**: Site configuration > Forms > Form notifications > Add notification > Email, for the `invite` form, to the DD contact address.
+2. **Airtable** (optional): add `AIRTABLE_TOKEN`, `AIRTABLE_BASE_ID` and `AIRTABLE_TABLE` as environment variables. The `submission-created` function then copies each application into Airtable. Column names are listed in `netlify/functions/submission-created.mjs`.
+3. **Newsletter**: on Beehiiv, add `BEEHIIV_API_KEY` and `BEEHIIV_PUBLICATION_ID` and sign-ups are passed straight through. Substack has no subscribe API, so on Substack export the `newsletter` form entries from Netlify and import them.
 
 ## Analytics
 
-Set `analytics.ga4Id` (Google Analytics 4) and/or `analytics.plausibleDomain`. Events are also pushed to `window.dataLayer` for Google Tag Manager.
+Set `plausibleDomain` and/or `ga4Id` in `src/data/site.ts`. Events:
 
-| Event | Fires when |
+| Event | When |
 |---|---|
-| `page_view` | page loads (with UTM) |
-| `cta_click` | any CTA is clicked (`cta`, `location`) |
-| `request_invite_click` | a Request an Invite button is clicked (`location`) |
-| `newsletter_click` | a newsletter button is clicked (`location`) |
-| `see_how_click` | the hero's "See how it works" link is clicked |
-| `invite_form_open` / `invite_form_start` | invite form is opened / first typed into |
-| `invite_form_submit` | invite request is sent (`source`) |
-| `newsletter_signup` | newsletter sign-up is sent (`source`) |
-| `pricing_view` | the membership section scrolls into view |
-| `section_view` | each section is seen (once per visit) |
-| `faq_open` | an FAQ question is opened |
-| `invite_form_error` / `newsletter_error` | a submission fails |
+| Request invite click | Any "Request an invite" button, with `section` (nav, hero, membership, founding, sticky-bar) |
+| Form step 1 complete | Step 1 passes validation |
+| Form submitted | Invite request sent, with `source` and `applying_as` |
+| Newsletter submitted | Newsletter sign-up sent |
+| Circle waitlist click | "Join the Circle waitlist" |
+| Companies email click | "Talk to us" on the companies line |
+| FAQ open | A question is opened |
 
-CTA conversion = `invite_form_submit ÷ request_invite_click`, broken down by `location`/`source` to see which placement converts best.
+In Plausible, add each event name as a custom goal.
 
-## Deploy
+## Fonts
 
-- **Netlify:** connect this repo. `netlify.toml` already sets the build command (`node scripts/build.mjs`) and the publish directory (the repo root).
-- **Anything else:** run the build, then upload the files. Switch `forms.mode` to `"endpoint"` first.
+Fraunces, DM Sans and Caveat come from `@fontsource` and are trimmed by `scripts/subset-fonts.sh` (Fraunces pinned at optical size 144 and weights 600 to 800, DM Sans 400 to 500, Caveat to the characters it shows). This takes the fonts from about 310 KB to 90 KB. That is the difference between a Lighthouse mobile performance score in the 80s and one in the high 90s. The output in `public/fonts` is committed. Re-run the script (needs `pip install fonttools brotli`) if you change any Caveat text, since Caveat only has the characters in `CAVEAT_TEXT`.
+
+## Open Graph image and favicon
+
+`npm run og` rebuilds `public/og.svg`, `public/og.png` (1200 x 630), `public/favicon.svg`, `favicon-32.png` and `apple-touch-icon.png`.

@@ -1,0 +1,60 @@
+---
+import Section from "../ui/Section.astro";
+import Hl from "../ui/Hl.astro";
+import Sparkle from "../ui/Sparkle.astro";
+import { site } from "../../data/site";
+
+const network = [
+  "Vetted membership and member directory",
+  "Monthly members' mixer and small dinners",
+  "Features, speaking slots and journalist requests",
+  "Warm introductions when you ask",
+  "Asks and offers: hiring, clients, collaborators",
+  "Member pricing on workshops and retreats",
+];
+const circle = [
+  "A facilitated Circle of 8 to 10, six sessions a year",
+  "Circles for going independent, founders, executives and boards",
+  "Concierge introductions, with no limit",
+  "A yearly feature and first pick of speaking slots",
+  "One Circle retreat a year",
+];
+---
+<Section id="membership" bg="paper">
+  <p class="eyebrow text-paprika">Membership</p>
+  <h2 class="h2 mt-4 text-paprika">Two ways <Hl>in.</Hl></h2>
+
+  <div class="mt-12 grid gap-6 lg:mt-16 lg:grid-cols-2">
+    <article class="card flex flex-col bg-cream p-7 lg:p-10" aria-labelledby="tier-network">
+      <p class="eyebrow text-paprika">The room</p>
+      <h3 id="tier-network" class="mt-3 text-[32px] text-paprika lg:text-[40px]">DD Network</h3>
+      <p class="mt-6 font-display text-[44px] font-bold leading-none text-paprika lg:text-[56px]">₹18,000 <span class="text-[22px] lg:text-[26px]">/ year</span></p>
+      <p class="mt-3 text-[15px]">Founding price, locked for 2 years. Usually ₹25,000. Or 3 × ₹6,000.</p>
+      <ul class="mt-7 space-y-3">
+        {network.map((i) => <li class="flex gap-3"><Sparkle size={14} color="fire" class="mt-[7px]" /><span>{i}</span></li>)}
+      </ul>
+      <div class="mt-auto pt-9">
+        <a href="#request" class="btn btn-primary w-full sm:w-auto" data-invite="membership">Request an invite</a>
+      </div>
+    </article>
+
+    <article class="card relative flex flex-col bg-paprika p-7 text-paper lg:p-10" aria-labelledby="tier-circle">
+      <p class="absolute -right-2 -top-4 rotate-[6deg] rounded-full bg-flame px-4 py-1.5 font-hand text-[22px] leading-none text-wine lg:-right-4">opening {site.circleOpening}</p>
+      <p class="eyebrow">Using the room</p>
+      <h3 id="tier-circle" class="mt-3 text-[32px] lg:text-[40px]">DD Circle</h3>
+      <p class="mt-6 font-display text-[44px] font-bold leading-none lg:text-[56px]">₹65,000 <span class="text-[22px] lg:text-[26px]">/ year</span></p>
+      <p class="mt-3 text-[15px]">Membership included. For women with 10+ years of experience.</p>
+      <ul class="mt-7 space-y-3">
+        {circle.map((i) => <li class="flex gap-3"><Sparkle size={14} color="flame" class="mt-[7px]" /><span>{i}</span></li>)}
+      </ul>
+      <div class="mt-auto pt-9">
+        <a href="/?interest=circle#request" class="btn btn-outline-paper w-full sm:w-auto" data-circle-waitlist>Join the Circle waitlist</a>
+      </div>
+    </article>
+  </div>
+
+  <div class="mx-auto mt-10 max-w-[640px] space-y-2 text-center text-[15px]">
+    <p>Prices exclude GST. A third membership exists, by invitation only.</p>
+    <p><strong class="font-medium">For companies:</strong> sponsor seats or a Circle for the women on your team. <a href="/?as=company#request" class="link text-fire" data-companies>Talk to us →</a></p>
+  </div>
+</Section>

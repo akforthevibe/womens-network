@@ -1,0 +1,43 @@
+---
+import Base from "../layouts/Base.astro";
+import Nav from "../components/sections/Nav.astro";
+import Hero from "../components/sections/Hero.astro";
+import ProofStrip from "../components/sections/ProofStrip.astro";
+import Network from "../components/sections/Network.astro";
+import Who from "../components/sections/Who.astro";
+import Membership from "../components/sections/Membership.astro";
+import Founding from "../components/sections/Founding.astro";
+import Hosts from "../components/sections/Hosts.astro";
+import HouseRules from "../components/sections/HouseRules.astro";
+import Faq from "../components/sections/Faq.astro";
+import Request from "../components/sections/Request.astro";
+import Footer from "../components/sections/Footer.astro";
+import { photos, photoSrcset } from "../data/photos";
+---
+<Base>
+  <link
+    slot="head"
+    rel="preload"
+    as="image"
+    imagesrcset={photoSrcset(photos.hero, [420, 640, 920], 1.25)}
+    imagesizes="(min-width: 1024px) 460px, (min-width: 480px) 420px, 92vw"
+    fetchpriority="high"
+  />
+  <Nav />
+  <main id="main">
+    <Hero />
+    <ProofStrip />
+    <Network />
+    <Who />
+    <Membership />
+    <Founding />
+    <Hosts />
+    <HouseRules />
+    <Faq />
+    <Request />
+  </main>
+  <Footer />
+  <script>
+    import "../scripts/main.ts";
+  </script>
+</Base>
