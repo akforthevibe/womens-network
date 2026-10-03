@@ -1,0 +1,23 @@
+---
+import Section from "../ui/Section.astro";
+import Script from "../ui/Script.astro";
+---
+<Section id="companies" bg="paper">
+  <div class="grid-12 items-end gap-y-10">
+    <div class="lg:col-span-6">
+      <h2 class="h2 text-plum">Give your best women the <Script>room.</Script></h2>
+      <p class="lede mt-8">The benefit they'll actually use, and talk about.</p>
+    </div>
+    <div class="grid gap-4 sm:grid-cols-2 lg:col-span-6">
+      <div class="rounded-[24px] border-[1.5px] border-maroon p-6">
+        <h3 class="text-[22px] text-plum">Network Access</h3>
+        <p class="mt-2 text-[16px]">Member seats as an employee benefit</p>
+      </div>
+      <div class="rounded-[24px] border-[1.5px] border-maroon p-6">
+        <h3 class="text-[22px] text-plum">Leadership Circle</h3>
+        <p class="mt-2 text-[16px]">Circle seats or a cohort, with aggregate reporting for L&amp;D</p>
+      </div>
+    </div>
+    <div class="lg:col-span-12"><a href="/companies/" class="btn btn-primary w-full sm:w-auto" data-companies="home">Sponsor a seat →</a></div>
+  </div>
+</Section>

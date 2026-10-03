@@ -1,8 +1,15 @@
 ---
-interface Props { id?: string; bg?: "paper" | "cream" | "wine" | "fire"; class?: string; label?: string }
-const { id, bg = "paper", class: className = "", label } = Astro.props;
-const bgClass = { paper: "bg-paper text-wine", cream: "bg-cream text-wine", wine: "bg-wine text-paper", fire: "bg-fire text-paper" }[bg];
+type Bg = "paper" | "cream" | "plum" | "magenta" | "crimson";
+interface Props { id?: string; bg?: Bg; class?: string; label?: string; wrapClass?: string }
+const { id, bg = "paper", class: className = "", label, wrapClass = "" } = Astro.props;
+const bgClass = {
+  paper: "bg-paper text-maroon",
+  cream: "bg-cream text-maroon",
+  plum: "on-dark bg-plum text-paper",
+  magenta: "on-dark bg-magenta text-paper",
+  crimson: "on-dark bg-crimson text-paper",
+}[bg];
 ---
 <section id={id} aria-label={label} class:list={[bgClass, "section relative", className]}>
-  <div class="wrap reveal"><slot /></div>
+  <div class:list={["wrap reveal", wrapClass]}><slot /></div>
 </section>

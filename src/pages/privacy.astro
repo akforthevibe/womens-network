@@ -1,41 +1,37 @@
 ---
 import Base from "../layouts/Base.astro";
+import Nav from "../components/sections/Nav.astro";
 import Footer from "../components/sections/Footer.astro";
+import Script from "../components/ui/Script.astro";
 import { site, isPlaceholder } from "../data/site";
 const email = site.contactEmail;
 ---
 <Base title="Privacy | DD Network" description="What DD Network collects, why, and how to ask us to delete it.">
-  <header class="bg-paper">
-    <div class="wrap flex h-[72px] items-center">
-      <a href="/" class="flex flex-col leading-none">
-        <span class="font-display text-[26px] font-bold text-wine">DD Network</span>
-        <span class="mt-1 text-[12px]">by Decoding Draupadi</span>
-      </a>
-    </div>
-  </header>
-  <main id="main" class="section bg-paper !pb-[72px]">
+  <Nav home={false} />
+  <main id="main" class="section bg-paper">
     <article class="wrap max-w-[760px]">
-      <p class="eyebrow text-paprika">Privacy</p>
-      <h1 class="h2 mt-4 text-paprika">Your data, plainly.</h1>
-      <p class="mt-4 text-[15px]">Last updated: 3 October 2026</p>
+      <p class="eyebrow text-crimson">Privacy</p>
+      <h1 class="h2 mt-4 text-crimson">Your data, <Script>plainly.</Script></h1>
+      <p class="mt-6 text-[15px]">Last updated: 3 October 2026</p>
 
-      <h2 class="mt-12 text-[26px] text-paprika">What we collect</h2>
-      <p class="mt-3">When you request an invite: your name, email, WhatsApp number, LinkedIn link, role, experience and the answers you give us. When you join the newsletter: your email. We also note which link brought you here.</p>
+      <h2 class="mt-12 text-[26px] text-plum">What we collect</h2>
+      <p class="mt-3">When you request an invite: your name, email, WhatsApp number, LinkedIn link, where you are in your work and the answers you give us. When a company asks about seats: the contact's name, work email and role. When you sign up for the founding notes: your email. We also note which link brought you here.</p>
 
-      <h2 class="mt-10 text-[26px] text-paprika">Why</h2>
-      <p class="mt-3">To review your application and, if you join, to make introductions you have agreed to. We email the newsletter only if you ask for it.</p>
+      <h2 class="mt-10 text-[26px] text-plum">Why</h2>
+      <p class="mt-3">To review your application and, if you join, to make introductions you have both agreed to. We send the founding notes only if you ask for them.</p>
 
-      <h2 class="mt-10 text-[26px] text-paprika">Who sees it</h2>
-      <p class="mt-3">The DD team. We never sell or share individual data. Our form and email tools store it for us and use it for nothing else.</p>
+      <h2 class="mt-10 text-[26px] text-plum">Who sees it</h2>
+      <p class="mt-3">The DD team. We never sell or share individual data. Companies that sponsor seats see only overall numbers, never what an individual woman says or shares. Our form and email tools store data for us and use it for nothing else.</p>
 
-      <h2 class="mt-10 text-[26px] text-paprika">How long we keep it</h2>
+      <h2 class="mt-10 text-[26px] text-plum">How long we keep it</h2>
       <p class="mt-3">While you are a member or your application is open. After that we delete it, unless the law asks us to keep a record.</p>
 
-      <h2 class="mt-10 text-[26px] text-paprika">Your rights</h2>
-      <p class="mt-3">Under India's Digital Personal Data Protection Act, 2023, you can ask to see, correct or delete your data, or withdraw consent, at any time. Write to {isPlaceholder(email) ? email : <a class="link text-fire" href={`mailto:${email}`}>{email}</a>} and we will act within 30 days.</p>
-
-      <p class="mt-12"><a href="/" class="link text-fire">Back to DD Network</a></p>
+      <h2 class="mt-10 text-[26px] text-plum">Your rights</h2>
+      <p class="mt-3">Under India's Digital Personal Data Protection Act, 2023, you can ask to see, correct or delete your data, or withdraw consent, at any time. Write to {isPlaceholder(email) ? email : <a class="link text-crimson" href={`mailto:${email}`}>{email}</a>} and we will act within 30 days.</p>
     </article>
   </main>
-  <Footer />
+  <Footer home={false} />
+  <script>
+    import "../scripts/main.ts";
+  </script>
 </Base>

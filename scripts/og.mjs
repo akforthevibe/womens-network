@@ -9,11 +9,10 @@ const font = (p) => {
   const buf = readFileSync(new URL(`../node_modules/${p}`, import.meta.url));
   return opentype.parse(buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength));
 };
-const fraunces = font("@fontsource/fraunces/files/fraunces-latin-700-normal.woff");
-const frauncesItalic = font("@fontsource/fraunces/files/fraunces-latin-700-italic.woff");
-const caveat = font("@fontsource/caveat/files/caveat-latin-600-normal.woff");
+const sans = font("@fontsource/figtree/files/figtree-latin-800-normal.woff");
+const script = font("@fontsource/mrs-saint-delafield/files/mrs-saint-delafield-latin-400-normal.woff");
 
-const C = { wine: "#400101", fire: "#BF3604", flame: "#F2913D", paper: "#FBF1E4" };
+const C = { plum: "#43123F", goldenrod: "#C4C600", paper: "#FFF6EE", amber: "#EC940C" };
 const text = (f, str, x, y, size, fill) => {
   const p = f.getPath(str, x, y, size);
   return { d: p.toPathData(2), width: f.getAdvanceWidth(str, size), fill };
@@ -39,35 +38,32 @@ function circleText(f, str, cx, cy, r, size, fill) {
   return out;
 }
 
-// Open Graph image
-const size = 92;
-const line1 = text(fraunces, "For women building", 80, 300, size, C.paper);
-const line2a = text(fraunces, "their ", 80, 400, size, C.paper);
-const line2b = text(frauncesItalic, "next chapter.", 80 + line2a.width, 400, size, C.flame);
-const squiggleX = 80 + line2a.width;
-const squiggle = `<path d="M${squiggleX} 430 C ${squiggleX + 60} 414, ${squiggleX + 110} 414, ${squiggleX + 160} 426 S ${squiggleX + 260} 442, ${squiggleX + 320} 424 S ${squiggleX + 420} 412, ${squiggleX + line2b.width} 426" fill="none" stroke="${C.flame}" stroke-width="7" stroke-linecap="round"/>`;
-const word = text(fraunces, "DD Network", 80, 140, 40, C.paper);
-const by = text(fraunces, "by Decoding Draupadi", 80, 540, 30, C.flame);
-const sticker = `<g transform="translate(1020 150) rotate(-8)">
-  <circle r="104" fill="${C.flame}"/>
-  ${circleText(caveat, "50 FOUNDING SEATS · BY APPLICATION · MUMBAI · ", 0, 0, 80, 25, C.wine)}
-  <path d="M0 -26 C 2 -8, 8 -2, 26 0 C 8 2, 2 8, 0 26 C -2 8, -8 2, -26 0 C -8 -2, -2 -8, 0 -26 Z" fill="${C.wine}"/>
+// Open Graph image: plum, "The room you've been" in paper sans, "looking for" in goldenrod script, sticker
+const word = text(sans, "DD Network", 80, 120, 36, C.paper);
+const l1 = text(sans, "The room", 80, 290, 120, C.paper);
+const l2 = text(sans, "you\u2019ve been", 80, 410, 120, C.paper);
+const look = script.getPath("looking for", 0, 0, 150);
+const lookSvg = `<path transform="translate(150 520) rotate(-4)" d="${look.toPathData(2)}" fill="${C.goldenrod}" stroke="${C.goldenrod}" stroke-width="2"/>`;
+const sticker = `<g transform="translate(1040 150) rotate(-8)">
+  <circle r="100" fill="${C.goldenrod}"/>
+  ${circleText(sans, "50 FOUNDING SEATS \u00b7 BY APPLICATION \u00b7 ", 0, 0, 76, 17, C.plum)}
+  <path d="M0 -26 C 2 -8, 8 -2, 26 0 C 8 2, 2 8, 0 26 C -2 8, -8 2, -26 0 C -8 -2, -2 -8, 0 -26 Z" fill="${C.plum}"/>
 </g>`;
 const og = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
-<rect width="1200" height="630" fill="${C.wine}"/>
-${path(word)}${path(line1)}${path(line2a)}${path(line2b)}${squiggle}${path(by)}
+<rect width="1200" height="630" fill="${C.plum}"/>
+${path(word)}${path(l1)}${path(l2)}${lookSvg}
 ${sticker}
 </svg>`;
 writeFileSync("public/og.svg", og);
 writeFileSync("public/og.png", new Resvg(og, { fitTo: { mode: "width", value: 1200 } }).render().asPng());
 
-// Favicon: "DD" in Fraunces, paper on wine
-const dd = fraunces.getPath("DD", 0, 0, 34);
+// Favicon: "DD" in the sans, paper on plum
+const dd = sans.getPath("DD", 0, 0, 36);
 const bb = dd.getBoundingBox();
 const dx = (64 - (bb.x2 - bb.x1)) / 2 - bb.x1;
 const dy = (64 - (bb.y2 - bb.y1)) / 2 - bb.y1;
 const fav = `<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
-<rect width="64" height="64" rx="14" fill="${C.wine}"/>
+<rect width="64" height="64" rx="14" fill="${C.plum}"/>
 <path transform="translate(${dx.toFixed(2)} ${dy.toFixed(2)})" d="${dd.toPathData(2)}" fill="${C.paper}"/>
 </svg>`;
 writeFileSync("public/favicon.svg", fav);

@@ -1,34 +1,28 @@
 ---
 import Section from "../ui/Section.astro";
-import Hl from "../ui/Hl.astro";
-
-// Swap in confirmed hosts: { name, title, photo } with photo an image URL.
-// Until then each slot shows a flame tile reading "Announcing soon".
-type Host = { name: string; title: string; photo?: string };
-const hosts: Host[] = Array.from({ length: 6 }, () => ({ name: "", title: "" }));
+import Script from "../ui/Script.astro";
+import { hosts } from "../../data/hosts";
 ---
-<Section id="hosts" bg="cream">
-  <p class="eyebrow text-paprika">Founding Hosts</p>
-  <h2 class="h2 mt-4 text-paprika">Hosted by women who've <Hl>done it.</Hl></h2>
-  <p class="mt-6 max-w-[52ch]">Founders, leaders and operators who host dinners, hold office hours and make introductions.</p>
+<Section id="hosts" bg="paper">
+  <p class="eyebrow text-crimson">Founding Hosts</p>
+  <h2 class="h2 mt-4 text-plum">Hosted by women who've <Script>done it.</Script></h2>
+  <p class="mt-8 max-w-[52ch]">The founder who scaled. The leader who stepped off the ladder and built her own. They host the dinners, hold office hours and open doors.</p>
 
-  <ul class="mt-12 grid grid-cols-3 gap-x-4 gap-y-8 lg:grid-cols-6 lg:gap-x-6">
+  <ul class="mt-12 grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3 lg:grid-cols-6">
     {hosts.map((h) => (
       <li class="flex flex-col items-center text-center">
-        {h.name ? (
-          <>
-            <img src={h.photo} alt={`Portrait of ${h.name}`} loading="lazy" decoding="async" width="160" height="160" class="aspect-square w-full max-w-[160px] rounded-full object-cover" style="filter: grayscale(1) contrast(1.1)" />
-            <p class="mt-4 font-display text-[20px] font-bold text-paprika">{h.name}</p>
-            <p class="text-[15px]">{h.title}</p>
-          </>
+        {h.name && h.photo ? (
+          <img src={h.photo} alt={`Portrait of ${h.name}`} loading="lazy" decoding="async" width="160" height="160" class="aspect-square w-full max-w-[150px] rounded-full object-cover" style="filter: grayscale(1) contrast(1.1)" />
         ) : (
-          <div class="flex aspect-square w-full max-w-[160px] items-center justify-center rounded-full bg-flame">
-            <span class="font-hand text-[18px] leading-tight sm:text-[24px] lg:text-[26px] text-wine">Announcing<br />soon</span>
+          <div class="flex aspect-square w-full max-w-[150px] items-center justify-center rounded-full bg-amber" aria-hidden="true">
+            <span class="font-script text-[44px] leading-none text-maroon">Soon</span>
           </div>
         )}
+        <p class="mt-4 font-bold text-plum">{h.name || "[Host name]"}</p>
+        {h.name && <p class="text-[15px]">{h.role}, {h.company}</p>}
       </li>
     ))}
   </ul>
 
-  <p class="mt-12"><a href="/?as=host#request" class="link text-paprika" data-host-link>Want to host? Tell us →</a></p>
+  <p class="mt-12"><a href="?interest=host#request" class="link text-crimson" data-host-link>Want to host? Tell us →</a></p>
 </Section>

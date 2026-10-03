@@ -1,0 +1,19 @@
+---
+import Section from "../ui/Section.astro";
+import Script from "../ui/Script.astro";
+import Photo from "../ui/Photo.astro";
+import { photos } from "../../data/photos";
+import { site } from "../../data/site";
+---
+<Section id="circle" bg="plum">
+  <div class="grid-12 items-center gap-y-12">
+    <div class="lg:col-span-7">
+      <p class="eyebrow text-amber">The Circle</p>
+      <h2 class="h2 mt-4 text-paper">Eight women. One <Script>table.</Script></h2>
+      <p class="lede mt-8 max-w-[38ch]">Six evenings a year where you bring the decision you can't talk about at work, and leave with a plan and eight people in your corner.</p>
+      <p class="mt-5 text-[15px]">For women 10+ years in. Opens {site.circleOpening}.</p>
+      <div class="mt-9"><a href="?interest=circle#request" class="btn btn-dark w-full sm:w-auto" data-circle-waitlist="circle-section">Join the Circle waitlist</a></div>
+    </div>
+    <Photo photo={photos.circle} block="magenta" ratio={1.1} class="mr-[14px] w-full max-w-[460px] lg:col-span-5 lg:max-w-none" sizes="(min-width: 1024px) 440px, 90vw" widths={[440, 660, 880]} />
+  </div>
+</Section>

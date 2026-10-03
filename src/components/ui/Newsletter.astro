@@ -1,19 +1,18 @@
 ---
-// Newsletter sign-up. Stored in Netlify Forms ("newsletter"), forwarded to the DD newsletter by the
-// submission-created function when its API key is set.
-interface Props { id?: string; class?: string; dark?: boolean }
-const { id = "newsletter", class: className = "" } = Astro.props;
+// Founding notes sign-up. Stored in Netlify Forms ("newsletter"), forwarded to the DD newsletter
+// by the submission-created function when its API key is set.
+interface Props { id?: string; class?: string }
+const { id = "founding-notes", class: className = "" } = Astro.props;
 ---
 <div id={id} class:list={["newsletter", className]} data-newsletter>
-  <p class="font-medium">Not ready yet? One email a month on what we're building.</p>
-  <form name="newsletter" method="POST" action="/thanks/?newsletter=1" data-netlify="true" netlify-honeypot="bot-field" class="mt-3 flex flex-col gap-3 sm:flex-row" novalidate data-newsletter-form>
+  <form name="newsletter" method="POST" action="/thanks/?newsletter=1" data-netlify="true" netlify-honeypot="bot-field" class="flex flex-col gap-3 sm:flex-row" novalidate data-newsletter-form>
     <input type="hidden" name="form-name" value="newsletter" />
     <p class="hidden"><label>Leave this empty <input name="bot-field" tabindex="-1" autocomplete="off" /></label></p>
     <input type="hidden" name="source" value="" data-source />
-    <label for={`${id}-email`} class="sr-only">Email</label>
+    <label for={`${id}-email`} class="sr-only">Email for the founding notes</label>
     <input id={`${id}-email`} type="email" name="email" required autocomplete="email" placeholder="you@example.com" aria-describedby={`${id}-error`} class="input flex-1" />
-    <button type="submit" class="btn btn-primary">Subscribe</button>
+    <button type="submit" class="btn btn-primary" data-track="Subscribe">Subscribe</button>
   </form>
-  <p id={`${id}-error`} class="mt-1.5 hidden text-[14px] font-medium text-paprika" data-error></p>
-  <p class="mt-3 hidden font-medium" role="status" data-success>You're in. Look out for our first note.</p>
+  <p id={`${id}-error`} class="mt-1.5 hidden text-[14px] font-medium text-crimson" data-error></p>
+  <p class="hidden font-semibold" role="status" data-success>You're in. Look out for the first note.</p>
 </div>

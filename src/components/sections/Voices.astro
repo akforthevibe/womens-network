@@ -1,0 +1,23 @@
+---
+import Section from "../ui/Section.astro";
+import Script from "../ui/Script.astro";
+import { voices } from "../../data/voices";
+// Hidden until at least two real quotes exist. Never use invented quotes.
+const show = voices.length >= 2;
+---
+{show && (
+  <Section bg="cream">
+    <h2 class="h2 text-crimson">In their <Script>words.</Script></h2>
+    <ul class="mt-12 grid gap-6 md:grid-cols-3">
+      {voices.slice(0, 3).map((v) => (
+        <li class="flex flex-col rounded-[24px] bg-paper p-7">
+          <img src={v.photo} alt={`Portrait of ${v.name}`} loading="lazy" decoding="async" width="72" height="72" class="h-[72px] w-[72px] rounded-full object-cover" style="filter: grayscale(1) contrast(1.1)" />
+          <blockquote class="mt-5 text-[19px] leading-snug">{v.quote}</blockquote>
+          <p class="mt-auto pt-6 font-bold text-plum">{v.name}</p>
+          <p class="text-[15px]">{v.role}, {v.company}</p>
+        </li>
+      ))}
+    </ul>
+    <div class="mt-10"><a href="#request" class="btn btn-primary w-full sm:w-auto" data-invite="voices" data-label="See if you're a fit">See if you're a fit</a></div>
+  </Section>
+)}

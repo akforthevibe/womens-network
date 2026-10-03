@@ -1,0 +1,26 @@
+---
+import Section from "../ui/Section.astro";
+import Script from "../ui/Script.astro";
+import { site } from "../../data/site";
+const steps = [
+  ["Apply.", "Five minutes. Tell us where you are and what you need next."],
+  ["Talk to us.", "A 20-minute call, so we know who to introduce you to."],
+  ["Take your seat.", `A welcome dinner with your intake within ${site.welcomeDinner}.`],
+];
+---
+<Section bg="cream">
+  <h2 class="h2 text-plum">Three steps to your first <Script>table.</Script></h2>
+  <ol class="mt-14 grid gap-6 md:grid-cols-3">
+    {steps.map(([title, body], i) => (
+      <li class="rounded-[24px] bg-paper p-7 lg:p-8">
+        <span class="block text-[56px] font-extrabold leading-none text-crimson" aria-hidden="true">{i + 1}</span>
+        <h3 class="mt-4 text-[26px] text-plum"><span class="sr-only">Step {i + 1}: </span>{title}</h3>
+        <p class="mt-2">{body}</p>
+      </li>
+    ))}
+  </ol>
+  <div class="mt-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
+    <a href="#request" class="btn btn-primary w-full sm:w-auto" data-invite="how-it-works" data-label="Start your application">Start your application</a>
+    <p class="text-[15px]">You'll need your LinkedIn and five minutes.</p>
+  </div>
+</Section>

@@ -1,30 +1,32 @@
 ---
 // Shown when a form is sent without JavaScript. With JavaScript the thank-you state replaces the form in place.
 import Base from "../layouts/Base.astro";
-import Newsletter from "../components/ui/Newsletter.astro";
-import { site } from "../data/site";
+import { site, href } from "../data/site";
 ---
 <Base title="Thank you | DD Network" noindex>
   <main id="main" class="section flex min-h-[80vh] items-center bg-cream">
     <div class="wrap max-w-[680px]">
-      <a href="/" class="font-display text-[26px] font-bold">DD Network</a>
-      <div class="frame frame-rounded mt-10 mr-[14px]">
-        <div class="card bg-paper p-8 sm:p-10">
+      <a href="/" class="text-[26px] font-extrabold tracking-tight">DD Network</a>
+      <div class="frame frame-rounded mr-[14px] mt-10">
+        <div class="rounded-[24px] bg-paper p-8 sm:p-10">
           <div data-thanks-invite>
-            <h1 class="font-display text-[34px] font-bold leading-tight text-paprika">Thank you.</h1>
-            <p class="mt-4">We read every application ourselves and reply within {site.replyTime}.</p>
-            <Newsletter class="mt-8" />
+            <h1 class="text-[34px] font-extrabold leading-tight text-plum">Thank you.</h1>
+            <p class="mt-4">We'll read this ourselves and be in touch within {site.replyTime}. Until then, join the free DD community to see who's already here.</p>
+            <a href={href(site.links.whatsappGroup)} class="btn btn-primary mt-6">Join the free DD community</a>
           </div>
-          <p class="hidden font-display text-[28px] font-bold text-paprika" data-thanks-newsletter-only>You're in. Look out for our first note.</p>
+          <p class="hidden text-[28px] font-extrabold text-plum" data-thanks-other>You're in. Look out for the first note.</p>
         </div>
       </div>
-      <p class="mt-10"><a href="/" class="link text-paprika">Back to DD Network</a></p>
+      <p class="mt-10"><a href="/" class="link text-crimson">Back to DD Network</a></p>
     </div>
   </main>
-  <script is:inline>
-    if (new URLSearchParams(location.search).has("newsletter")) {
+  <script is:inline define:vars={{ companies: `Thanks. We'll reply within ${site.companiesReplyTime} with options for your team.` }}>
+    const q = new URLSearchParams(location.search);
+    const other = document.querySelector("[data-thanks-other]");
+    if (q.has("newsletter") || q.has("companies")) {
       document.querySelector("[data-thanks-invite]").classList.add("hidden");
-      document.querySelector("[data-thanks-newsletter-only]").classList.remove("hidden");
+      other.classList.remove("hidden");
+      if (q.has("companies")) other.textContent = companies;
     }
   </script>
 </Base>

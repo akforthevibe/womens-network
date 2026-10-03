@@ -1,34 +1,35 @@
 ---
 import Section from "../ui/Section.astro";
-import Hl from "../ui/Hl.astro";
+import Script from "../ui/Script.astro";
 import Sticker from "../ui/Sticker.astro";
 import { site } from "../../data/site";
 
 const items = [
   ["01", "Your price, locked for 2 years"],
   ["02", "Two invites for women you'd vouch for"],
-  ["03", "A say in what we build"],
-  ["04", "Founding status, for good"],
+  ["03", "A say in what we build next"],
+  ["04", "Your name on the founding wall"],
 ];
 ---
-<Section id="founding" bg="wine" class="overflow-hidden">
+<Section id="founding" bg="magenta" class="overflow-hidden">
   <div class="relative">
-    <Sticker id="sticker-founding" text="50 FOUNDING SEATS · BY APPLICATION · MUMBAI ·" class="absolute -top-6 right-0 lg:-top-4 lg:right-4" size={110} />
-    <p class="eyebrow text-flame">Founding intake</p>
-    <h2 class="h2 mt-4 pr-28 lg:pr-0">Be one of the first <Hl tone="flame">50.</Hl></h2>
+    <Sticker id="sticker-founding" text="50 FOUNDING SEATS · BY APPLICATION ·" class="absolute -top-8 right-0 lg:-top-4 lg:right-4" size={110} />
+    <p class="eyebrow text-goldenrod">Founding intake</p>
+    <h2 class="h2 mt-4 pr-28 text-paper lg:pr-0">Be one of the first <Script>50.</Script></h2>
+    <p class="lede mt-8 max-w-[36ch]">The first fifty set the tone for every woman who joins after them.</p>
 
-    <ol class="mt-12 grid grid-cols-2 gap-x-6 gap-y-10 lg:mt-16 lg:grid-cols-4">
+    <ol class="mt-12 grid grid-cols-2 gap-x-6 gap-y-10 lg:grid-cols-4">
       {items.map(([n, line]) => (
         <li>
-          <span class="block font-display text-[56px] font-bold leading-none text-flame lg:text-[72px]">{n}</span>
+          <span class="block text-[52px] font-extrabold leading-none text-amber lg:text-[68px]" aria-hidden="true">{n}</span>
           <span class="mt-3 block text-[17px] lg:text-[19px]">{line}</span>
         </li>
       ))}
     </ol>
 
-    <div class="mt-14 flex flex-col items-start gap-5 sm:flex-row-reverse sm:justify-end sm:items-center sm:gap-8">
-      <p class="text-[15px]">Intake closes {site.intakeCloses} or when seats are filled.</p>
-      <a href="#request" class="btn btn-primary" data-invite="founding">Request an invite</a>
+    <div class="mt-14 flex flex-col items-start gap-5 sm:flex-row sm:items-center sm:gap-8">
+      <a href="#request" class="btn btn-dark w-full sm:w-auto" data-invite="final-band">Request an invite</a>
+      <p class="text-[15px]">Intake closes {site.intakeCloses}, or when the fifty seats are gone.</p>
     </div>
   </div>
 </Section>

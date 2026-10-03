@@ -1,48 +1,55 @@
 ---
+interface Props { home?: boolean }
+const { home = true } = Astro.props;
+const p = home ? "" : "/";
 const links = [
-  { href: "#the-network", label: "The network" },
-  { href: "#who", label: "Who it's for" },
-  { href: "#membership", label: "Membership" },
-  { href: "#founding", label: "Founding 50" },
-  { href: "#faq", label: "FAQ" },
+  { href: `${p}#the-room`, label: "The room" },
+  { href: `${p}#membership`, label: "Membership" },
+  { href: `${p}#circle`, label: "Circle" },
+  { href: "/companies/", label: "For companies" },
+  { href: `${p}#faq`, label: "FAQ" },
 ];
 ---
-<a href="#main" class="sr-only-focusable fixed left-4 top-4 z-[70] rounded-full bg-wine px-5 py-3 text-paper">Skip to content</a>
-<header class="sticky top-0 z-50 bg-paper/95" data-nav>
-  <nav class="wrap flex h-[72px] items-center justify-between gap-6" aria-label="Main">
-    <a href="/" class="flex flex-col leading-none">
-      <span class="font-display text-[26px] font-bold tracking-tight text-wine">DD Network</span>
-      <span class="mt-1 text-[12px] text-wine">by Decoding Draupadi</span>
+<a href="#main" class="sr-only-focusable fixed left-4 top-4 z-[70] rounded-full bg-maroon px-5 py-3 text-paper">Skip to content</a>
+<header class="sticky top-0 z-50 bg-paper" data-nav>
+  <nav class="wrap flex h-[76px] items-center justify-between gap-4" aria-label="Main">
+    <a href="/" class="flex flex-col leading-none text-maroon">
+      <span class="whitespace-nowrap text-[22px] font-extrabold tracking-tight sm:text-[24px] lg:text-[26px]">DD Network</span>
+      <span class="-mt-0.5 whitespace-nowrap font-script text-[22px] leading-none text-crimson lg:text-[26px]">by Decoding Draupadi</span>
     </a>
 
-    <ul class="hidden items-center gap-7 text-[15px] font-medium lg:flex">
-      {links.map((l) => <li><a href={l.href} class="hover:text-fire">{l.label}</a></li>)}
-      <li><a href="#request" class="btn btn-primary !py-3 !px-6" data-invite="nav">Request an invite</a></li>
+    <ul class="hidden items-center gap-7 text-[15px] font-semibold lg:flex">
+      {links.map((l) => <li><a href={l.href} class="py-3 hover:text-crimson">{l.label}</a></li>)}
     </ul>
 
-    <button
-      type="button"
-      class="-mr-2 flex h-11 w-11 items-center justify-center rounded-full lg:hidden"
-      aria-expanded="false"
-      aria-controls="mobile-menu"
-      data-menu-toggle
-    >
-      <span class="sr-only">Menu</span>
-      <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true" fill="none" stroke="var(--color-wine)" stroke-width="2.5" stroke-linecap="round">
-        <path data-open d="M3 8 H23 M3 18 H23" />
-        <path data-close class="hidden" d="M5 5 L21 21 M21 5 L5 21" />
-      </svg>
-    </button>
+    <div class="flex items-center gap-1">
+      <a href={`${p}#request`} class="btn btn-primary whitespace-nowrap !px-4 !py-2.5 text-[14px] sm:!px-5 sm:text-[15px] lg:!px-6 lg:!py-3" data-invite="nav">Request an invite</a>
+      <button
+        type="button"
+        class="-mr-2 flex h-11 w-11 items-center justify-center rounded-full lg:hidden"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        data-menu-toggle
+      >
+        <span class="sr-only">Menu</span>
+        <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true" fill="none" stroke="var(--color-maroon)" stroke-width="2.5" stroke-linecap="round">
+          <path data-open d="M3 8 H23 M3 18 H23" />
+          <path data-close class="hidden" d="M5 5 L21 21 M21 5 L5 21" />
+        </svg>
+      </button>
+    </div>
   </nav>
 
-  <div id="mobile-menu" class="hidden border-t border-wine/15 bg-paper lg:hidden" data-menu>
-    <ul class="wrap flex flex-col py-4 text-[20px] font-medium">
-      {links.map((l) => <li><a href={l.href} class="block py-3">{l.label}</a></li>)}
+  <!-- Mobile menu: full-screen panel, large tap targets -->
+  <div id="mobile-menu" class="fixed inset-x-0 bottom-0 top-[76px] hidden overflow-y-auto bg-paper lg:hidden" data-menu>
+    <ul class="wrap flex flex-col py-6">
+      {links.map((l) => <li><a href={l.href} class="flex min-h-14 items-center border-b border-maroon/15 text-[28px] font-extrabold tracking-tight">{l.label}</a></li>)}
     </ul>
+    <div class="wrap pb-10"><a href={`${p}#request`} class="btn btn-primary w-full" data-invite="menu">Request an invite</a></div>
   </div>
 </header>
 
-<!-- Sticky bottom bar on mobile -->
-<div class="fixed inset-x-0 bottom-0 z-40 bg-paper/95 p-3 transition-transform duration-200 lg:hidden" data-sticky-bar>
-  <a href="#request" class="btn btn-primary w-full" data-invite="sticky-bar">Request an invite</a>
+<!-- Sticky bottom bar on phones: appears after the first scroll, hides at the form -->
+<div class="fixed inset-x-0 bottom-0 z-40 bg-paper p-3 transition-transform duration-200 lg:hidden" style="padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px))" data-sticky-bar>
+  <a href={`${p}#request`} class="btn btn-primary w-full" data-invite="sticky-bar">Request an invite</a>
 </div>

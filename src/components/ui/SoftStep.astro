@@ -1,0 +1,14 @@
+---
+// The softer second step: the free DD community on WhatsApp, or the founding notes.
+import Newsletter from "./Newsletter.astro";
+import { site, href } from "../../data/site";
+interface Props { class?: string }
+const { class: className = "" } = Astro.props;
+---
+<div class:list={["soft-step", className]} data-soft-step>
+  <p>
+    Not ready yet? <a href={href(site.links.whatsappGroup)} class="link text-crimson" data-whatsapp="soft-step">Join the free DD community</a> on WhatsApp,
+    or <a href="#founding-notes-email" class="link text-crimson">get the founding notes</a>, one email a month on who's joining.
+  </p>
+  <Newsletter class="mt-4" />
+</div>

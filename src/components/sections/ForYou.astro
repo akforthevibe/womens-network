@@ -1,0 +1,33 @@
+---
+import Section from "../ui/Section.astro";
+import Script from "../ui/Script.astro";
+const yes = [
+  "You're 7 to 20 years in, inside a company or building your own",
+  "People already come to you for advice",
+  "You want to give as much as you get",
+  "You live in Mumbai, or you're here often",
+];
+const no = ["You're here to sell to the room", "You want a 500-person mixer", "You want a feed to scroll, not people to meet", "You're looking for a job board"];
+---
+<Section id="the-room" bg="cream">
+  <h2 class="h2 text-crimson">Is this <Script>you?</Script></h2>
+  <div class="mt-12 grid gap-6 md:grid-cols-2">
+    <div class="rounded-[24px] bg-paper p-7 lg:p-10">
+      <h3 class="text-[24px] text-plum lg:text-[28px]">It's for you if</h3>
+      <ul class="mt-5 space-y-3">
+        {yes.map((t) => (
+          <li class="flex gap-3"><svg class="mt-1.5 h-4 w-4 shrink-0" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="var(--color-crimson)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8.5 L6 12.5 L14 3.5" /></svg><span>{t}</span></li>
+        ))}
+      </ul>
+    </div>
+    <div class="rounded-[24px] bg-paper p-7 lg:p-10">
+      <h3 class="text-[24px] text-plum lg:text-[28px]">It's not for you if</h3>
+      <ul class="mt-5 space-y-3">
+        {no.map((t) => (
+          <li class="flex gap-3"><svg class="mt-1.5 h-4 w-4 shrink-0" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="var(--color-maroon)" stroke-width="2.5" stroke-linecap="round"><path d="M3 3 L13 13 M13 3 L3 13" /></svg><span>{t}</span></li>
+        ))}
+      </ul>
+    </div>
+  </div>
+  <div class="mt-10"><a href="#request" class="btn btn-primary w-full sm:w-auto" data-invite="for-you" data-label="See if you're a fit">See if you're a fit</a></div>
+</Section>

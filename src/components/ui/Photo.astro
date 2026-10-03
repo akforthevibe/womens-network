@@ -4,7 +4,7 @@ import { photoUrl, photoSrcset, type Photo } from "../../data/photos";
 interface Props {
   photo: Photo;
   shape?: "rounded" | "arch";
-  block?: "flame" | "fire";
+  block?: "amber" | "magenta" | "crimson";
   ratio?: number; // height / width
   sizes?: string;
   widths?: number[];
@@ -15,7 +15,7 @@ interface Props {
 const {
   photo,
   shape = "rounded",
-  block = "flame",
+  block = "amber",
   ratio = 1.2,
   sizes = "(min-width: 1024px) 400px, 100vw",
   widths = [400, 640, 800, 1000],
@@ -41,5 +41,8 @@ const fallback = widths[Math.min(1, widths.length - 1)];
       decoding="async"
       onerror="this.style.visibility='hidden'"
     />
+    {photo.caption && (
+      <figcaption class="absolute bottom-3 left-3 rounded-full bg-paper px-3 py-1 text-[13px] font-semibold text-maroon">{photo.caption}</figcaption>
+    )}
   </div>
 </figure>

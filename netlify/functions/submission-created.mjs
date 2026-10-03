@@ -3,6 +3,7 @@
 // this forwards copies when the keys below are set in Site settings > Environment variables.
 //
 //   AIRTABLE_TOKEN, AIRTABLE_BASE_ID, AIRTABLE_TABLE  (invite form to Airtable)
+//   AIRTABLE_COMPANIES_TABLE                           (companies form, same base)
 //   BEEHIIV_API_KEY, BEEHIIV_PUBLICATION_ID            (newsletter to Beehiiv)
 //
 // Substack has no public subscribe API. If the DD newsletter is on Substack, export
@@ -14,7 +15,8 @@ export default async (req) => {
   const data = payload?.data ?? {};
 
   try {
-    if (form === "invite") await toAirtable(data);
+    if (form === "invite") await toAirtable(inviteFields(data), process.env.AIRTABLE_TABLE || "Applications");
+    if (form === "companies") await toAirtable(companyFields(data), process.env.AIRTABLE_COMPANIES_TABLE || "Companies");
     if (form === "newsletter") await toNewsletter(data.email);
   } catch (err) {
     // Log and carry on: the submission is already safe in Netlify Forms.
@@ -23,38 +25,39 @@ export default async (req) => {
   return new Response("ok");
 };
 
-async function toAirtable(d) {
-  const { AIRTABLE_TOKEN, AIRTABLE_BASE_ID, AIRTABLE_TABLE = "Applications" } = process.env;
-  if (!AIRTABLE_TOKEN || !AIRTABLE_BASE_ID) {
-    // TODO: add the Airtable keys above to switch this on. Field names must match the table's columns.
-    console.log("Airtable not configured; invite kept in Netlify Forms only.");
-    return;
-  }
-  const fields = {
+function inviteFields(d) {
+  return {
     Name: d.name,
     Email: d.email,
     WhatsApp: d.whatsapp,
     LinkedIn: d.linkedin,
-    "Role and company": d.role,
-    "Years of experience": d.years,
-    "Right now": d.where,
-    "Applying as": d.applying_as,
+    "Describes her": d.describes,
+    "Interested in": d.interest,
     "Need in 90 days": d.need,
     "Could offer": d.offer,
-    "Rank: room": d.rank_room,
-    "Rank: seen": d.rank_seen,
-    "Rank: introduced": d.rank_introduced,
-    Interest: d.interest,
     "Heard via": d.heard,
     Consent: d.consent === "yes",
     Source: d.source,
-    "UTM source": d.utm_source,
-    "UTM medium": d.utm_medium,
-    "UTM campaign": d.utm_campaign,
-    "UTM term": d.utm_term,
-    "UTM content": d.utm_content,
+    ...utmFields(d),
   };
-  const res = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(AIRTABLE_TABLE)}`, {
+}
+
+function companyFields(d) {
+  return { Company: d.company, Name: d.name, "Work email": d.email, Role: d.role, Seats: Number(d.seats) || d.seats, Product: d.product, ...utmFields(d) };
+}
+
+function utmFields(d) {
+  return { "UTM source": d.utm_source, "UTM medium": d.utm_medium, "UTM campaign": d.utm_campaign, "UTM term": d.utm_term, "UTM content": d.utm_content };
+}
+
+async function toAirtable(fields, table) {
+  const { AIRTABLE_TOKEN, AIRTABLE_BASE_ID } = process.env;
+  if (!AIRTABLE_TOKEN || !AIRTABLE_BASE_ID) {
+    // TODO: add the Airtable keys above to switch this on. Field names must match the table's columns.
+    console.log(`Airtable not configured; ${table} entry kept in Netlify Forms only.`);
+    return;
+  }
+  const res = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${encodeURIComponent(table)}`, {
     method: "POST",
     headers: { Authorization: `Bearer ${AIRTABLE_TOKEN}`, "Content-Type": "application/json" },
     body: JSON.stringify({ records: [{ fields }], typecast: true }),

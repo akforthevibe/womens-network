@@ -1,60 +1,102 @@
 ---
 import Section from "../ui/Section.astro";
-import Hl from "../ui/Hl.astro";
+import Script from "../ui/Script.astro";
 import Sparkle from "../ui/Sparkle.astro";
 import { site } from "../../data/site";
 
-const network = [
-  "Vetted membership and member directory",
-  "Monthly members' mixer and small dinners",
-  "Features, speaking slots and journalist requests",
-  "Warm introductions when you ask",
-  "Asks and offers: hiring, clients, collaborators",
-  "Member pricing on workshops and retreats",
+const member = [
+  "Every member, in one directory",
+  "You control who sees and contacts you",
+  "A members-only mixer, every month",
+  "Meetups every fortnight",
+  "Small dinners with women at your stage",
+  "Time with our Founding Hosts",
+  "Up to 2 warm introductions a quarter",
+  "A chance to be featured by DD",
+  "Member pricing on everything DD runs",
 ];
 const circle = [
-  "A facilitated Circle of 8 to 10, six sessions a year",
-  "Circles for going independent, founders, executives and boards",
-  "Concierge introductions, with no limit",
-  "A yearly feature and first pick of speaking slots",
-  "One Circle retreat a year",
+  "Everything in Member",
+  "Your own Circle: 8 to 10 senior women, six facilitated evenings a year",
+  "Introductions on demand. We do the searching.",
+  "The reverse directory: find talent, vendors and partners",
+  "Speaking slots through Draupadi on the Dais",
+  "Journalist and PR requests, picked for you",
+  "A guaranteed feature every year",
+  "Premium dinners and first access to retreats",
 ];
+const Y = "✓";
+const rows: [string, string, string][] = [
+  ["Member directory", Y, Y],
+  ["Members-only mixer, monthly", Y, Y],
+  ["Meetups, fortnightly", Y, Y],
+  ["Small dinners", Y, `${Y}, plus premium dinners`],
+  ["Founding Host office hours", Y, "Priority"],
+  ["Warm introductions", "Up to 2 a quarter", "On demand"],
+  ["Reverse directory", "", Y],
+  ["Features by DD", "A chance", "Guaranteed yearly"],
+  ["Speaking through Draupadi on the Dais", "", Y],
+  ["Journalist and PR requests", "", Y],
+  ["Facilitated Circle", "", "6 evenings a year"],
+  ["Retreats", "Member pricing", "First access"],
+  ["Price", "₹25,000 / year", "₹65,000 / year"],
+];
+const cell = (v: string) => v === Y ? "Included" : v.startsWith(Y) ? `Included${v.slice(1)}` : v || "Not included";
 ---
-<Section id="membership" bg="paper">
-  <p class="eyebrow text-paprika">Membership</p>
-  <h2 class="h2 mt-4 text-paprika">Two ways <Hl>in.</Hl></h2>
+<Section id="membership" bg="cream">
+  <p class="eyebrow text-crimson">Membership</p>
+  <h2 class="h2 mt-4 text-crimson">Two ways <Script>in.</Script></h2>
 
   <div class="mt-12 grid gap-6 lg:mt-16 lg:grid-cols-2">
-    <article class="card flex flex-col bg-cream p-7 lg:p-10" aria-labelledby="tier-network">
-      <p class="eyebrow text-paprika">The room</p>
-      <h3 id="tier-network" class="mt-3 text-[32px] text-paprika lg:text-[40px]">DD Network</h3>
-      <p class="mt-6 font-display text-[44px] font-bold leading-none text-paprika lg:text-[56px]">₹18,000 <span class="text-[22px] lg:text-[26px]">/ year</span></p>
-      <p class="mt-3 text-[15px]">Founding price, locked for 2 years. Usually ₹25,000. Or 3 × ₹6,000.</p>
+    <article class="flex flex-col rounded-[24px] bg-paper p-7 lg:p-10" aria-labelledby="tier-member">
+      <p class="eyebrow self-start rounded-full bg-cream px-3 py-1 text-crimson">Founding price</p>
+      <h3 id="tier-member" class="mt-5 text-[36px] text-plum lg:text-[44px]">Member</h3>
+      <p class="mt-2 text-[19px] font-semibold">Get into the room.</p>
+      <p class="mt-6 text-[44px] font-extrabold leading-none tracking-tight text-crimson lg:text-[56px]">₹25,000 <span class="text-[22px] lg:text-[24px]">/ year</span></p>
+      <p class="mt-3 text-[15px]">Founding members keep this price for 2 years. Pay upfront or in 3 instalments.</p>
       <ul class="mt-7 space-y-3">
-        {network.map((i) => <li class="flex gap-3"><Sparkle size={14} color="fire" class="mt-[7px]" /><span>{i}</span></li>)}
+        {member.map((i) => <li class="flex gap-3"><Sparkle size={14} color="crimson" class="mt-[7px]" /><span>{i}</span></li>)}
       </ul>
-      <div class="mt-auto pt-9">
-        <a href="#request" class="btn btn-primary w-full sm:w-auto" data-invite="membership">Request an invite</a>
-      </div>
+      <div class="mt-auto pt-9"><a href="#request" class="btn btn-primary w-full sm:w-auto" data-invite="member-card">Request an invite</a></div>
     </article>
 
-    <article class="card relative flex flex-col bg-paprika p-7 text-paper lg:p-10" aria-labelledby="tier-circle">
-      <p class="absolute -right-2 -top-4 rotate-[6deg] rounded-full bg-flame px-4 py-1.5 font-hand text-[22px] leading-none text-wine lg:-right-4">opening {site.circleOpening}</p>
-      <p class="eyebrow">Using the room</p>
-      <h3 id="tier-circle" class="mt-3 text-[32px] lg:text-[40px]">DD Circle</h3>
-      <p class="mt-6 font-display text-[44px] font-bold leading-none lg:text-[56px]">₹65,000 <span class="text-[22px] lg:text-[26px]">/ year</span></p>
-      <p class="mt-3 text-[15px]">Membership included. For women with 10+ years of experience.</p>
+    <article class="on-dark relative flex flex-col rounded-[24px] bg-plum p-7 text-paper lg:p-10" aria-labelledby="tier-circle">
+      <p class="absolute -right-2 -top-5 rotate-[6deg] rounded-full bg-goldenrod px-4 py-2 text-[15px] font-bold text-plum lg:-right-4">Opens {site.circleOpening}</p>
+      <p class="eyebrow text-amber">Using the room</p>
+      <h3 id="tier-circle" class="mt-5 text-[36px] lg:text-[44px]">Circle</h3>
+      <p class="mt-2 text-[19px] font-semibold">We help you use the room.</p>
+      <p class="mt-6 text-[44px] font-extrabold leading-none tracking-tight text-amber lg:text-[56px]">₹65,000 <span class="text-[22px] lg:text-[24px]">/ year</span></p>
+      <p class="mt-3 text-[15px]">Membership included. For women 10+ years in.</p>
       <ul class="mt-7 space-y-3">
-        {circle.map((i) => <li class="flex gap-3"><Sparkle size={14} color="flame" class="mt-[7px]" /><span>{i}</span></li>)}
+        {circle.map((i) => <li class="flex gap-3"><Sparkle size={14} color="goldenrod" class="mt-[7px]" /><span>{i}</span></li>)}
       </ul>
-      <div class="mt-auto pt-9">
-        <a href="/?interest=circle#request" class="btn btn-outline-paper w-full sm:w-auto" data-circle-waitlist>Join the Circle waitlist</a>
-      </div>
+      <div class="mt-auto pt-9"><a href="?interest=circle#request" class="btn btn-dark w-full sm:w-auto" data-circle-waitlist="circle-card">Join the Circle waitlist</a></div>
     </article>
   </div>
 
-  <div class="mx-auto mt-10 max-w-[640px] space-y-2 text-center text-[15px]">
-    <p>Prices exclude GST. A third membership exists, by invitation only.</p>
-    <p><strong class="font-medium">For companies:</strong> sponsor seats or a Circle for the women on your team. <a href="/?as=company#request" class="link text-fire" data-companies>Talk to us →</a></p>
+  <div class="relative mt-14 overflow-x-auto rounded-[24px] bg-paper">
+    <table class="w-full min-w-[560px] text-left text-[15px] lg:text-[16px]">
+      <caption class="sr-only">Member and Circle compared</caption>
+      <thead>
+        <tr class="border-b-[1.5px] border-maroon/20">
+          <th scope="col" class="p-4 lg:px-7"><span class="sr-only">Feature</span></th>
+          <th scope="col" class="p-4 text-[18px] font-extrabold text-crimson lg:px-7">Member</th>
+          <th scope="col" class="p-4 text-[18px] font-extrabold text-plum lg:px-7">Circle</th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map(([f, m, c], i) => (
+          <tr class:list={["border-b border-maroon/10 last:border-0", i === rows.length - 1 && "font-bold"]}>
+            <th scope="row" class="p-4 font-semibold lg:px-7">{f}</th>
+            {[m, c].map((v) => (
+              <td class="p-4 lg:px-7">
+                {v.startsWith(Y) ? <><span aria-hidden="true" class="font-bold text-crimson">{v}</span><span class="sr-only">{cell(v)}</span></> : v ? v : <span aria-hidden="true" class="opacity-40">·</span><span class="sr-only">Not included</span>}
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
   </div>
+  <p class="mt-6 text-center text-[15px]">Prices exclude GST. There is a third membership. You'll know if you're invited.</p>
 </Section>

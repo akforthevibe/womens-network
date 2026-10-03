@@ -1,8 +1,10 @@
 ---
 import { site } from "../../data/site";
+const { members, years, events, press } = site.proof;
+const items = [`${members} women in the DD community`, `${years} years of Decoding Draupadi`, `${events} events hosted`, `As featured in ${press}`];
 ---
-<section class="bg-fire text-paper" aria-label="About DD Network">
-  <p class="wrap py-5 text-center text-[15px] font-medium lg:text-[17px]">
-    Built by Decoding Draupadi<span aria-hidden="true"> · </span><span class="sr-only">.</span>{site.proofCount} women in our community<span aria-hidden="true"> · </span><span class="sr-only">.</span>Speakers placed through Draupadi on the Dais
-  </p>
+<section class="bg-crimson text-paper" aria-label="Decoding Draupadi in numbers">
+  <ul class="wrap flex flex-wrap items-center justify-center gap-x-3 gap-y-1 py-5 text-center text-[15px] font-semibold lg:text-[17px]">
+    {items.map((t, i) => (<li>{i > 0 && <span aria-hidden="true" class="mr-3">·</span>}{t}</li>))}
+  </ul>
 </section>

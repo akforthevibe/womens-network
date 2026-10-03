@@ -1,0 +1,41 @@
+---
+import Section from "../ui/Section.astro";
+import Script from "../ui/Script.astro";
+import Photo from "../ui/Photo.astro";
+import Arrow from "../ui/Arrow.astro";
+import { photos } from "../../data/photos";
+import { site } from "../../data/site";
+
+const tiles = [
+  { name: "The room", photo: photos.room, cls: "bg-plum text-paper", block: "amber" as const,
+    body: "A members-only mixer every month. Meetups every fortnight. Dinners small enough to actually talk." },
+  { name: "The directory", photo: photos.directory, cls: "bg-magenta text-paper", block: "amber" as const,
+    body: "Every member, what she's building and what she can help with. You choose who can find you." },
+  { name: "Introductions", photo: photos.introductions, cls: "bg-amber text-maroon", block: "crimson" as const,
+    body: "Need someone specific? Ask. We make a warm introduction when you both say yes." },
+  { name: "Visibility", photo: photos.visibility, cls: "bg-crimson text-paper", block: "amber" as const,
+    body: "Get featured in DD's newsletter and podcast, and get on stage through Draupadi on the Dais." },
+];
+---
+<Section bg="paper">
+  <p class="eyebrow text-crimson">What you get</p>
+  <h2 class="h2 mt-4 text-crimson">What the room <Script>gives you.</Script></h2>
+
+  <ul class="mt-14 grid gap-6 md:grid-cols-2 md:gap-y-24 lg:mt-20">
+    {tiles.map((t, i) => (
+      <li class:list={["relative flex flex-col rounded-[24px] p-5 pb-8 lg:p-7 lg:pb-10", t.cls, i === 2 && "mt-16 md:mt-0"]}>
+        {i === 2 && (
+          <p class="absolute -top-16 right-2 flex items-start gap-1 md:-top-[72px]">
+            <span class="font-script text-[34px] leading-none text-crimson">the part nobody else does</span>
+            <Arrow class="mt-3 h-[52px] w-[60px]" />
+          </p>
+        )}
+        <Photo photo={t.photo} block={t.block} ratio={0.62} class="mb-8 mr-[14px]" sizes="(min-width: 1024px) 560px, (min-width: 768px) 45vw, 90vw" widths={[480, 720, 1000]} />
+        <h3 class="text-[30px] lg:text-[38px]">{t.name}</h3>
+        <p class="mt-3 max-w-[44ch]">{t.body}</p>
+        {i === 3 && site.visibilityExample && <p class="mt-4 text-[15px] font-semibold">{site.visibilityExample}</p>}
+      </li>
+    ))}
+  </ul>
+  <div class="mt-12"><a href="#request" class="btn btn-primary w-full sm:w-auto" data-invite="pillars">Request an invite</a></div>
+</Section>

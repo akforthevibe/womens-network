@@ -1,0 +1,128 @@
+---
+import Base from "../layouts/Base.astro";
+import Announcement from "../components/sections/Announcement.astro";
+import Nav from "../components/sections/Nav.astro";
+import Footer from "../components/sections/Footer.astro";
+import Section from "../components/ui/Section.astro";
+import Script from "../components/ui/Script.astro";
+import Field from "../components/ui/Field.astro";
+import { site } from "../data/site";
+
+const products = [
+  {
+    name: "Network Access",
+    body: "Member seats for your women. A network they'd never find on their own, with mixers, dinners, a directory and warm introductions.",
+    price: "From ₹[25,000] a seat a year.",
+    cls: "bg-paper",
+  },
+  {
+    name: "Leadership Circle",
+    body: "Circle seats or a full cohort for your senior women. Six facilitated evenings, concierge introductions, and an aggregate report for L&D.",
+    price: "From ₹[65,000] a seat a year.",
+    cls: "bg-plum text-paper",
+  },
+];
+const steps = ["Tell us how many seats", "We onboard each woman personally", "You get an aggregate report each quarter"];
+const productOptions = ["Network Access", "Leadership Circle", "Not sure"];
+const utm = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"];
+---
+<Base title="DD Network for Companies | Give your best women the room" description="Member seats and senior peer Circles for the women you want to grow and keep. GST invoices, one contract, seats you can reassign.">
+  <Announcement home={false} />
+  <Nav home={false} />
+  <main id="main">
+    <section class="bg-paper pb-[72px] pt-10 lg:pb-[112px] lg:pt-16" aria-labelledby="companies-title">
+      <div class="wrap">
+        <p class="eyebrow text-crimson">For companies</p>
+        <h1 id="companies-title" class="h1 mt-5 max-w-[12ch] text-crimson">Give your best women the <Script>room.</Script></h1>
+        <p class="lede mt-8 max-w-[40ch]">A curated network and senior peer Circles for the women you want to grow and keep.</p>
+        <div class="mt-8"><a href="#seats" class="btn btn-primary w-full sm:w-auto" data-companies="companies-hero">Talk to us about seats</a></div>
+      </div>
+    </section>
+
+    <Section bg="cream" label="Two products">
+      <div class="grid gap-6 md:grid-cols-2">
+        {products.map((p) => (
+          <article class:list={["flex flex-col rounded-[24px] p-7 lg:p-10", p.cls]}>
+            <h2 class="text-[32px] lg:text-[40px]">{p.name}</h2>
+            <p class="mt-4">{p.body}</p>
+            <p class="mt-6 font-bold">{p.price}</p>
+          </article>
+        ))}
+      </div>
+    </Section>
+
+    <Section bg="paper">
+      <h2 class="text-[32px] text-plum lg:text-[44px]">How it works</h2>
+      <ol class="mt-10 grid gap-6 md:grid-cols-3">
+        {steps.map((s, i) => (
+          <li class="rounded-[24px] bg-cream p-7">
+            <span class="block text-[48px] font-extrabold leading-none text-crimson" aria-hidden="true">{i + 1}</span>
+            <p class="mt-4 text-[20px] font-bold text-plum"><span class="sr-only">Step {i + 1}: </span>{s}</p>
+          </li>
+        ))}
+      </ol>
+    </Section>
+
+    <Section bg="cream">
+      <h2 class="text-[32px] text-plum lg:text-[44px]">What you'll see, and what you won't</h2>
+      <p class="lede mt-6 max-w-[48ch]">You'll see attendance, satisfaction and overall outcomes. You won't see anything an individual woman says or shares. That's what makes the room worth it.</p>
+    </Section>
+
+    <Section bg="paper">
+      <h2 class="text-[32px] text-plum lg:text-[44px]">Paying for it</h2>
+      <p class="lede mt-6 max-w-[48ch]">GST invoices, one contract for all seats, seats you can reassign if someone leaves. Usually paid from L&amp;D or employee benefits budgets.</p>
+    </Section>
+
+    <Section id="seats" bg="cream">
+      <div class="grid-12 gap-y-10">
+        <div class="lg:col-span-5">
+          <h2 class="h2 text-crimson">Talk to us about <Script>seats.</Script></h2>
+        </div>
+        <div class="lg:col-span-7">
+          <div class="frame frame-rounded mb-[14px] mr-[14px]" style="--frame-block: var(--color-magenta)">
+            <div class="rounded-[24px] bg-paper p-6 sm:p-9" data-simple-card>
+              <form name="companies" method="POST" action="/thanks/?companies=1" data-netlify="true" netlify-honeypot="bot-field" novalidate data-simple-form="companies">
+                <input type="hidden" name="form-name" value="companies" />
+                <p class="hidden"><label>Leave this empty <input name="bot-field" tabindex="-1" autocomplete="off" /></label></p>
+                {utm.map((u) => <input type="hidden" name={u} value="" data-utm={u} />)}
+                <div class="grid gap-5 sm:grid-cols-2">
+                  <Field name="company" label="Company">
+                    <input id="f-company" name="company" type="text" required autocomplete="organization" class="input" aria-describedby="f-company-error" data-message="Please add your company name." />
+                  </Field>
+                  <Field name="name" label="Your name">
+                    <input id="f-name" name="name" type="text" required autocomplete="name" class="input" aria-describedby="f-name-error" data-message="Please add your name." />
+                  </Field>
+                  <Field name="email" label="Work email">
+                    <input id="f-email" name="email" type="email" required autocomplete="email" class="input" aria-describedby="f-email-error" data-message="Please add your work email." />
+                  </Field>
+                  <Field name="role" label="Role">
+                    <input id="f-role" name="role" type="text" required autocomplete="organization-title" class="input" aria-describedby="f-role-error" data-message="Please add your role." />
+                  </Field>
+                  <Field name="seats" label="Number of seats">
+                    <input id="f-seats" name="seats" type="number" min="1" inputmode="numeric" required class="input" aria-describedby="f-seats-error" data-message="Please add how many seats you're thinking of." />
+                  </Field>
+                </div>
+                <fieldset class="field mt-6" data-field="product" aria-describedby="f-product-error">
+                  <legend class="text-[15px] font-medium">Product</legend>
+                  <div class="mt-2 flex flex-wrap gap-3">
+                    {productOptions.map((p) => (
+                      <label class="choice"><input type="radio" name="product" value={p} required data-message="Please choose a product, or Not sure." /><span>{p}</span></label>
+                    ))}
+                  </div>
+                  <p id="f-product-error" class="mt-1.5 hidden text-[14px] font-medium text-crimson" data-error></p>
+                </fieldset>
+                <p class="mt-6 hidden font-semibold text-crimson" role="alert" data-form-error></p>
+                <button type="submit" class="btn btn-primary mt-8 w-full sm:w-auto" data-submit>Talk to us about seats</button>
+              </form>
+              <p class="hidden text-[24px] font-extrabold leading-snug text-plum" tabindex="-1" data-thanks>Thanks. We'll reply within {site.companiesReplyTime} with options for your team.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Section>
+  </main>
+  <Footer home={false} />
+  <script>
+    import "../scripts/main.ts";
+  </script>
+</Base>

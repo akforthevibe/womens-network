@@ -1,15 +1,20 @@
 ---
 import Base from "../layouts/Base.astro";
+import Announcement from "../components/sections/Announcement.astro";
 import Nav from "../components/sections/Nav.astro";
 import Hero from "../components/sections/Hero.astro";
 import ProofStrip from "../components/sections/ProofStrip.astro";
-import Network from "../components/sections/Network.astro";
-import Who from "../components/sections/Who.astro";
-import Membership from "../components/sections/Membership.astro";
-import Founding from "../components/sections/Founding.astro";
+import Problem from "../components/sections/Problem.astro";
+import ForYou from "../components/sections/ForYou.astro";
+import Pillars from "../components/sections/Pillars.astro";
+import HowItWorks from "../components/sections/HowItWorks.astro";
 import Hosts from "../components/sections/Hosts.astro";
-import HouseRules from "../components/sections/HouseRules.astro";
+import Voices from "../components/sections/Voices.astro";
+import Circle from "../components/sections/Circle.astro";
+import Membership from "../components/sections/Membership.astro";
+import Companies from "../components/sections/Companies.astro";
 import Faq from "../components/sections/Faq.astro";
+import Founding from "../components/sections/Founding.astro";
 import Request from "../components/sections/Request.astro";
 import Footer from "../components/sections/Footer.astro";
 import { photos, photoSrcset } from "../data/photos";
@@ -23,17 +28,22 @@ import { photos, photoSrcset } from "../data/photos";
     imagesizes="(min-width: 1024px) 460px, (min-width: 480px) 420px, 92vw"
     fetchpriority="high"
   />
+  <Announcement />
   <Nav />
   <main id="main">
     <Hero />
     <ProofStrip />
-    <Network />
-    <Who />
-    <Membership />
-    <Founding />
+    <Problem />
+    <ForYou />
+    <Pillars />
+    <HowItWorks />
     <Hosts />
-    <HouseRules />
+    <Voices />
+    <Circle />
+    <Membership />
+    <Companies />
     <Faq />
+    <Founding />
     <Request />
   </main>
   <Footer />

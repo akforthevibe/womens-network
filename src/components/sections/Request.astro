@@ -1,68 +1,42 @@
 ---
 import Section from "../ui/Section.astro";
-import Hl from "../ui/Hl.astro";
+import Script from "../ui/Script.astro";
 import Photo from "../ui/Photo.astro";
 import Field from "../ui/Field.astro";
-import Newsletter from "../ui/Newsletter.astro";
+import SoftStep from "../ui/SoftStep.astro";
 import { photos } from "../../data/photos";
-import { site } from "../../data/site";
+import { site, href } from "../../data/site";
 
-const years = ["Under 7", "7 to 12", "12 to 20", "20+"];
-const where = [
-  "Building inside a company",
-  "Thinking about leaving",
-  "Left in the last 12 months",
-  "Building my own practice or company",
-];
-const applyingAs = [
-  { value: "Member", key: "member" },
-  { value: "Founding Host", key: "host" },
-  { value: "Company", key: "company" },
-];
-const ranks = [
-  { name: "rank_room", label: "Get into the room" },
-  { name: "rank_seen", label: "Get seen" },
-  { name: "rank_introduced", label: "Get introduced" },
-];
+const describes = ["Building inside a company", "Building my own practice or company", "Both"];
 const interests = [
-  { value: "DD Network", key: "network" },
-  { value: "DD Circle", key: "circle" },
-  { value: "Not sure", key: "unsure" },
+  { value: "Member", key: "member" },
+  { value: "Circle", key: "circle" },
+  { value: "Becoming a Founding Host", key: "host" },
+  { value: "Seats for my company", key: "company" },
 ];
-const heard = ["DD Instagram", "DD WhatsApp", "Newsletter", "A friend", "Other"];
+const heard = ["DD Instagram", "DD WhatsApp", "Founding notes", "A friend", "Other"];
 const utm = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"];
 ---
 <Section id="request" bg="cream">
   <div class="grid-12 gap-y-12 lg:gap-y-10">
     <div class="lg:col-span-5 lg:row-start-1">
-      <h2 class="h2 text-paprika">Request an <Hl>invite.</Hl></h2>
-      <p class="mt-6 max-w-[40ch]">Tell us about you and your next move. We read every application and reply within {site.replyTime}.</p>
+      <h2 class="h2 text-crimson">Request an <Script>invite.</Script></h2>
+      <p class="mt-8 max-w-[40ch]">Five minutes, a few honest answers, then a short call with us. We read every application and reply within {site.replyTime}.</p>
     </div>
 
     <div class="lg:col-span-7 lg:col-start-6 lg:row-span-2 lg:row-start-1">
-      <div class="frame frame-rounded mr-[14px] mb-[14px]" style="--frame-block: var(--color-flame)">
-        <div class="card relative bg-paper p-6 sm:p-9" data-invite-card>
-          <form
-            name="invite"
-            method="POST"
-            action="/thanks/"
-            data-netlify="true"
-            netlify-honeypot="bot-field"
-            novalidate
-            data-invite-form
-          >
+      <div class="frame frame-rounded mb-[14px] mr-[14px]" style="--frame-block: var(--color-amber)">
+        <div class="relative rounded-[24px] bg-paper p-6 sm:p-9" data-invite-card>
+          <form name="invite" method="POST" action="/thanks/" data-netlify="true" netlify-honeypot="bot-field" novalidate data-invite-form>
             <input type="hidden" name="form-name" value="invite" />
             <p class="hidden"><label>Leave this empty <input name="bot-field" tabindex="-1" autocomplete="off" /></label></p>
             <input type="hidden" name="source" value="" data-source />
             {utm.map((u) => <input type="hidden" name={u} value="" data-utm={u} />)}
 
-            <p class="eyebrow text-paprika" aria-live="polite" data-progress>
-              <span data-step-label>1 of 2</span>
-            </p>
+            <p class="eyebrow text-crimson" aria-live="polite" data-progress><span data-step-label>1 of 2</span></p>
 
-            <!-- Step 1 -->
-            <fieldset class="mt-5" data-step="1">
-              <legend class="font-display text-[26px] font-bold text-paprika">About you</legend>
+            <fieldset class="mt-4" data-step="1">
+              <legend class="text-[26px] font-extrabold tracking-tight text-plum">About you</legend>
               <div class="mt-6 grid gap-5 sm:grid-cols-2">
                 <Field name="name" label="Full name">
                   <input id="f-name" name="name" type="text" required autocomplete="name" class="input" aria-describedby="f-name-error" />
@@ -76,44 +50,34 @@ const utm = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_conten
                 <Field name="linkedin" label="LinkedIn profile">
                   <input id="f-linkedin" name="linkedin" type="url" required inputmode="url" placeholder="linkedin.com/in/yourname" class="input" aria-describedby="f-linkedin-error" />
                 </Field>
-                <Field name="role" label="Role and company (or your business)" class="sm:col-span-2">
-                  <input id="f-role" name="role" type="text" required autocomplete="organization-title" class="input" aria-describedby="f-role-error" />
-                </Field>
-                <Field name="years" label="Years of experience">
-                  <select id="f-years" name="years" required class="input" aria-describedby="f-years-error">
+                <Field name="describes" label="Which describes you?" class="sm:col-span-2">
+                  <select id="f-describes" name="describes" required class="input" aria-describedby="f-describes-error">
                     <option value="">Choose one</option>
-                    {years.map((y) => <option>{y}</option>)}
-                  </select>
-                </Field>
-                <Field name="where" label="Where are you right now?">
-                  <select id="f-where" name="where" required class="input" aria-describedby="f-where-error">
-                    <option value="">Choose one</option>
-                    {where.map((w) => <option>{w}</option>)}
+                    {describes.map((d) => <option>{d}</option>)}
                   </select>
                 </Field>
               </div>
-              <fieldset class="field mt-6" data-field="applying_as" aria-describedby="f-applying_as-error">
-                <legend class="text-[15px] font-medium">Applying as</legend>
+              <fieldset class="field mt-6" data-field="interest" aria-describedby="f-interest-error">
+                <legend class="text-[15px] font-medium">I'm interested in</legend>
                 <div class="mt-2 flex flex-wrap gap-3">
-                  {applyingAs.map((a) => (
+                  {interests.map((m) => (
                     <label class="choice">
-                      <input type="radio" name="applying_as" value={a.value} required data-as={a.key} />
-                      <span>{a.value}</span>
+                      <input type="radio" name="interest" value={m.value} required data-interest={m.key} />
+                      <span>{m.value}</span>
                     </label>
                   ))}
                 </div>
-                <p id="f-applying_as-error" class="mt-1.5 hidden text-[14px] font-medium text-paprika" data-error></p>
+                <p id="f-interest-error" class="mt-1.5 hidden text-[14px] font-medium text-crimson" data-error></p>
               </fieldset>
               <div class="mt-8 hidden js-show">
                 <button type="button" class="btn btn-primary w-full sm:w-auto" data-next>Next</button>
               </div>
             </fieldset>
 
-            <!-- Step 2 -->
             <fieldset class="mt-10 js-step2" data-step="2">
-              <legend class="font-display text-[26px] font-bold text-paprika">Your next move</legend>
+              <legend class="text-[26px] font-extrabold tracking-tight text-plum">Your next move</legend>
               <div class="mt-6 grid gap-5">
-                <Field name="need" label="What's the one thing you need in the next 90 days?">
+                <Field name="need" label="What do you need in the next 90 days?">
                   <textarea id="f-need" name="need" required maxlength="300" rows="3" class="input" aria-describedby="f-need-error f-need-count"></textarea>
                   <p id="f-need-count" class="mt-1 text-right text-[13px]" data-count>0 / 300</p>
                 </Field>
@@ -121,34 +85,6 @@ const utm = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_conten
                   <textarea id="f-offer" name="offer" required maxlength="300" rows="3" class="input" aria-describedby="f-offer-error f-offer-count"></textarea>
                   <p id="f-offer-count" class="mt-1 text-right text-[13px]" data-count>0 / 300</p>
                 </Field>
-                <fieldset data-rank>
-                  <legend class="text-[15px] font-medium">Which matters most to you? <span class="font-normal">(optional)</span></legend>
-                  <p class="text-[14px]">Rank them 1 to 3.</p>
-                  <div class="mt-2 grid gap-2">
-                    {ranks.map((r, i) => (
-                      <div class="flex items-center justify-between gap-4 rounded-xl bg-cream px-4 py-2">
-                        <label for={`f-${r.name}`}>{r.label}</label>
-                        <select id={`f-${r.name}`} name={r.name} class="input !w-auto !py-2" data-rank-select>
-                          <option value="">Rank</option>
-                          <option value="1">1</option>
-                          <option value="2">2</option>
-                          <option value="3">3</option>
-                        </select>
-                      </div>
-                    ))}
-                  </div>
-                </fieldset>
-                <fieldset>
-                  <legend class="text-[15px] font-medium">Which membership interests you? <span class="font-normal">(optional)</span></legend>
-                  <div class="mt-2 flex flex-wrap gap-3">
-                    {interests.map((m) => (
-                      <label class="choice">
-                        <input type="radio" name="interest" value={m.value} data-interest={m.key} />
-                        <span>{m.value}</span>
-                      </label>
-                    ))}
-                  </div>
-                </fieldset>
                 <Field name="heard" label="How did you hear about us? (optional)">
                   <select id="f-heard" name="heard" class="input">
                     <option value="">Choose one</option>
@@ -157,34 +93,34 @@ const utm = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_conten
                 </Field>
                 <div class="field" data-field="consent">
                   <label class="flex items-start gap-3 text-[15px]">
-                    <input type="checkbox" name="consent" value="yes" required class="mt-1 h-5 w-5 shrink-0 accent-fire" aria-describedby="f-consent-error" />
-                    <span>I agree to DD Network storing my answers to review my application and make introductions. <a href="/privacy/" class="link text-paprika">Privacy</a></span>
+                    <input type="checkbox" name="consent" value="yes" required class="mt-1 h-5 w-5 shrink-0 accent-crimson" aria-describedby="f-consent-error" />
+                    <span>I agree to DD Network storing my answers to review my application and make introductions. <a href="/privacy/" class="link text-crimson">Privacy</a></span>
                   </label>
-                  <p id="f-consent-error" class="mt-1.5 hidden text-[14px] font-medium text-paprika" data-error></p>
+                  <p id="f-consent-error" class="mt-1.5 hidden text-[14px] font-medium text-crimson" data-error></p>
                 </div>
               </div>
-              <p class="mt-6 hidden font-medium text-paprika" role="alert" data-form-error></p>
+              <p class="mt-6 hidden font-semibold text-crimson" role="alert" data-form-error></p>
               <div class="mt-8 flex flex-wrap items-center gap-4">
                 <button type="submit" class="btn btn-primary w-full sm:w-auto" data-submit>Send my request</button>
-                <button type="button" class="link hidden text-[15px] text-paprika js-show" data-back>Back</button>
+                <button type="button" class="link hidden min-h-11 text-[15px] text-crimson js-show" data-back>Back</button>
               </div>
             </fieldset>
           </form>
 
           <div class="hidden" tabindex="-1" data-thanks>
-            <p class="font-display text-[30px] font-bold leading-tight text-paprika lg:text-[36px]">Thank you, <span data-first-name></span>.</p>
-            <p class="mt-4">We read every application ourselves and reply within {site.replyTime}.</p>
-            <div class="mt-8" data-thanks-newsletter></div>
+            <p class="text-[30px] font-extrabold leading-tight tracking-tight text-plum lg:text-[36px]">Thank you, <span data-first-name></span>.</p>
+            <p class="mt-4">We'll read this ourselves and be in touch within {site.replyTime}. Until then, join the free DD community to see who's already here.</p>
+            <a href={href(site.links.whatsappGroup)} class="btn btn-primary mt-6 w-full sm:w-auto" data-whatsapp="thank-you">Join the free DD community</a>
           </div>
         </div>
       </div>
 
-      <Newsletter class="mt-10" />
+      <SoftStep class="mt-10" />
     </div>
 
     <Photo
-      photo={photos.signup}
-      block="fire"
+      photo={photos.request}
+      block="magenta"
       ratio={0.8}
       class="mr-[14px] lg:col-span-5 lg:row-start-2 lg:self-start"
       sizes="(min-width: 1024px) 460px, 90vw"

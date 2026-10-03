@@ -1,0 +1,16 @@
+---
+import { site } from "../../data/site";
+interface Props { home?: boolean }
+const { home = true } = Astro.props;
+---
+<div class="bg-plum text-paper" data-announcement>
+  <div class="wrap flex min-h-11 items-center justify-between gap-4 py-2 text-[14px] sm:text-[15px]">
+    <p class="flex-1 text-center">
+      Founding intake closes {site.intakeCloses}. 50 seats.{" "}
+      <a href={home ? "#request" : "/#request"} class="font-semibold underline decoration-amber decoration-2 underline-offset-4 hover:text-amber" data-invite="announcement">Request an invite →</a>
+    </p>
+    <button type="button" class="hidden h-11 w-11 shrink-0 items-center justify-center rounded-full hover:text-amber js-flex" aria-label="Dismiss announcement" data-dismiss-announcement>
+      <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 3 L13 13 M13 3 L3 13" /></svg>
+    </button>
+  </div>
+</div>

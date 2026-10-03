@@ -4,9 +4,9 @@ import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 
 const EM_DASH = String.fromCharCode(0x2014);
-const banned = ["empower", "girlboss", "queens", "slay", "journey", "unlock", "elevate", "synergy", "community"];
-// The brief's own proof strip line uses "community"; it is the one allowed use.
-const allowed = ["women in our community"];
+const banned = ["empower", "girlboss", "queens", "slay", "journey", "unlock", "elevate", "synergy", "tribe", "one-of-a-kind", "community"];
+// "community" is allowed only as the free DD community (brief v2, rule 3).
+const allowed = ["dd community"];
 const skip = new Set(["node_modules", ".git", ".astro", "_astro", "check-copy.mjs", "package-lock.json"]);
 const exts = /\.(astro|ts|mjs|js|css|html|md|toml|json|svg)$/;
 

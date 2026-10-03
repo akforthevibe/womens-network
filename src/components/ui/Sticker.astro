@@ -1,17 +1,17 @@
 ---
-// Round badge: flame fill, wine Caveat text set around the circle, tilted -8deg, slowly spinning.
+// Round badge: goldenrod fill, plum text set around the circle, tilted -8deg, slowly spinning.
 // Decorative. The same words appear as real text beside it (sr-only).
 interface Props { text: string; size?: number; class?: string; id: string }
 const { text, size = 120, class: className = "", id } = Astro.props;
 ---
-<div class:list={["pointer-events-none select-none", className]} style={`width:${size}px;height:${size}px;transform:rotate(-8deg)`}>
-  <svg class="spin h-full w-full" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
-    <defs><path id={id} d="M60 60 m -43 0 a 43 43 0 1 1 86 0 a 43 43 0 1 1 -86 0" /></defs>
-    <circle cx="60" cy="60" r="58" fill="var(--color-flame)" />
-    <text font-family="Caveat, cursive" font-weight="600" font-size="15.5" fill="var(--color-wine)" letter-spacing="0.6">
-      <textPath href={`#${id}`} textLength="268" lengthAdjust="spacing">{text}</textPath>
+<div class:list={["pointer-events-none select-none", className]} style={`width:${size}px;height:${size}px;transform:rotate(-8deg)`} aria-hidden="true">
+  <svg class="spin h-full w-full" viewBox="0 0 120 120" focusable="false">
+    <defs><path id={id} d="M60 60 m -44 0 a 44 44 0 1 1 88 0 a 44 44 0 1 1 -88 0" /></defs>
+    <circle cx="60" cy="60" r="58" fill="var(--color-goldenrod)" />
+    <text font-family="Figtree, sans-serif" font-weight="800" font-size="10.5" fill="var(--color-plum)" letter-spacing="1">
+      <textPath href={`#${id}`} textLength="274" lengthAdjust="spacing">{text}</textPath>
     </text>
-    <path d="M60 46 C 61 55, 64 58, 73 60 C 64 61, 61 64, 60 74 C 59 64, 56 61, 47 60 C 56 58, 59 55, 60 46 Z" fill="var(--color-wine)" />
+    <path d="M60 44 C 61 54, 64 57, 76 60 C 64 62, 61 65, 60 76 C 59 65, 56 62, 44 60 C 56 57, 59 54, 60 44 Z" fill="var(--color-plum)" />
   </svg>
 </div>
 <span class="sr-only">{text}</span>
