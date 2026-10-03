@@ -1,0 +1,28 @@
+---
+import { comparison } from "../data/content";
+const last = comparison.length - 1;
+---
+<div class="mt-24 md:mt-32">
+  <h3 class="h2 reveal">What's included.</h3>
+  <div class="hscroll reveal -mx-5 mt-10 overflow-x-auto px-5 md:mx-0 md:px-0" tabindex="0" role="region" aria-label="Member and Circle compared, scrolls sideways on small screens">
+    <table class="w-full min-w-[560px] border-collapse text-left">
+      <thead>
+        <tr class="border-b-2 border-maroon">
+          <th scope="col" class="w-[46%] pb-4"><span class="sr-only">Feature</span></th>
+          <th scope="col" class="eyebrow pb-4 pr-4">Member</th>
+          <th scope="col" class="eyebrow pb-4 text-magenta">Circle</th>
+        </tr>
+      </thead>
+      <tbody>
+        {comparison.map(([feature, m, c], i) => (
+          <tr class:list={["border-b border-maroon/12", i === last && "border-b-0"]}>
+            <th scope="row" class:list={["py-4 pr-4 text-[16.5px]", i === last ? "pt-6 font-extrabold" : "font-semibold"]}>{feature}</th>
+            <td class:list={["py-4 pr-4 text-[16.5px]", m === "No" && "opacity-45", i === last && "pt-6 text-[24px] font-black tracking-[-0.02em]"]}>{m}</td>
+            <td class:list={["py-4 text-[16.5px] font-semibold", c === "No" && "opacity-45", i === last && "pt-6 text-[24px] font-black tracking-[-0.02em] text-magenta"]}>{c}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  <p class="small reveal mt-8 opacity-80">Both memberships are annual. Prices exclude GST.</p>
+</div>

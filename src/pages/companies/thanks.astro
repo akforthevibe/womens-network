@@ -1,0 +1,13 @@
+---
+// Shown only when JavaScript is off and the companies form posts normally.
+import LegalLayout from "../../components/LegalLayout.astro";
+import { site } from "../../data/site";
+---
+<LegalLayout title="Thank you | DD Network for Companies" description="We have your note about seats." noindex>
+  <div class="wrap max-w-[800px]">
+    <p class="eyebrow text-crimson">For companies</p>
+    <h1 class="h2 mt-6">Thank you. We'll be in touch.</h1>
+    <p class="lede mt-8">Someone from the DD team will reply within {site.replyTime} to talk seats.</p>
+    <a href="/companies" class="btn btn-primary mt-10">Back to For companies</a>
+  </div>
+</LegalLayout>

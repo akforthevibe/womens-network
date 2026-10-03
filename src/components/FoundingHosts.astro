@@ -1,0 +1,53 @@
+---
+import ScriptHeading from "./ScriptHeading.astro";
+import Arrow from "./Arrow.astro";
+import { hosts } from "../data/content";
+// Until hosts are confirmed, six empty portrait frames show "Coming soon". Never invent names.
+const frames = hosts.length ? hosts : Array.from({ length: 6 }, () => null);
+const tints = ["bg-plum", "bg-magenta", "bg-crimson", "bg-maroon", "bg-plum", "bg-magenta"];
+---
+<section class="section bg-cream" aria-labelledby="hosts-title">
+  <div class="wrap grid-12 gap-y-10">
+    <div class="md:col-span-6">
+      <p class="eyebrow reveal text-crimson">Founding Hosts</p>
+      <ScriptHeading id="hosts-title" text="Hosted by women who've done it." script="done it" class="reveal mt-6" />
+    </div>
+    <div class="reveal d1 space-y-5 md:col-span-5 md:col-start-8 md:self-end">
+      <p class="text-[22px] font-bold leading-[1.3] tracking-[-0.01em]">The founder who scaled. The leader who changed industries. The woman who left the ladder and built something else.</p>
+      <p class="opacity-85">Founding Hosts make the room better. They host dinners, share what they know and open the right doors.</p>
+    </div>
+  </div>
+
+  <div class="hscroll mt-14 overflow-x-auto pb-4 md:mt-20 md:overflow-visible md:pb-0">
+    <ul class="wrap flex w-max gap-4 md:grid md:w-full md:grid-cols-3 md:gap-6 lg:grid-cols-6" aria-label={hosts.length ? "Founding Hosts" : "Founding Hosts, announcing soon"}>
+      {frames.map((h, i) => (
+        <li class:list={["reveal w-[200px] shrink-0 md:w-auto", `d${i % 3}`]}>
+          {h ? (
+            <figure class="m-0">
+              <div class="photo aspect-[4/5] rounded-[20px]">
+                <img src={h.photo.src} alt={h.photo.alt} loading="lazy" decoding="async" width="400" height="500" />
+              </div>
+              <figcaption class="mt-4">
+                <p class="text-[18px] font-extrabold leading-tight">{h.name}</p>
+                <p class="mt-1 text-[15px] opacity-80">{h.role}, {h.company}</p>
+              </figcaption>
+            </figure>
+          ) : (
+            <div class:list={["relative flex aspect-[4/5] items-end overflow-hidden rounded-[20px] p-4", tints[i]]}>
+              <svg viewBox="0 0 100 125" class="absolute inset-x-[18%] bottom-0 w-[64%] text-paper/12" aria-hidden="true">
+                <circle cx="50" cy="42" r="22" fill="currentColor" />
+                <path d="M6 125 C 8 86, 28 72, 50 72 C 72 72, 92 86, 94 125 Z" fill="currentColor" />
+              </svg>
+              <span class="sticker relative flex h-[76px] w-[76px] items-center justify-center rounded-full bg-amber text-center text-[11px] font-black uppercase leading-[1.05] tracking-[0.04em] text-maroon" style={`--tilt:${i % 2 ? 8 : -8}deg`}>Coming<br />soon</span>
+            </div>
+          )}
+        </li>
+      ))}
+    </ul>
+  </div>
+
+  <div class="wrap reveal mt-12 flex flex-wrap items-center gap-x-4 gap-y-2 md:mt-16">
+    <p class="font-bold">Want to become a Founding Host?</p>
+    <a href="/?as=host#request" data-host-link class="tlink text-crimson">Tell us <Arrow /></a>
+  </div>
+</section>

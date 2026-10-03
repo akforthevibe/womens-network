@@ -1,41 +1,68 @@
 ---
-import Base from "../layouts/Base.astro";
-import Footer from "../components/sections/Footer.astro";
+import LegalLayout from "../components/LegalLayout.astro";
 import { site, isPlaceholder } from "../data/site";
 const email = site.contactEmail;
+const sections = [
+  {
+    h: "What we collect",
+    p: [
+      "When you request an invite: your name, email, WhatsApp number, LinkedIn profile, how you describe your work, what you are interested in, and your answers about what you need and what you could offer. We also note how you heard about us and which link brought you here.",
+      "When you ask for the founding notes: your email. When a company asks about seats: the company name, your name, work email, role, number of seats and interest.",
+    ],
+  },
+  {
+    h: "Why we collect it",
+    p: ["To review your application, talk to you, run your membership and make introductions you have agreed to. We send the founding notes only if you ask for them."],
+  },
+  {
+    h: "Application review",
+    p: ["Every application is read by a person on the DD team. Your answers are used to decide whether DD Network is the right room for you, and to prepare for your 20-minute conversation with us. We do not use automated scoring."],
+  },
+  {
+    h: "Member introductions",
+    p: [
+      "Introductions are double opt-in. When a member asks to meet someone, we check with the other member first and share contact details only once both of you agree.",
+      "In the member directory, you control what other members can see and who can contact you.",
+    ],
+  },
+  {
+    h: "Storage",
+    p: ["Your information is stored with the form, email and database tools we use to run DD Network. They hold it on our behalf and use it for nothing else. We keep it while your application is open or while you are a member, then delete it unless the law asks us to keep a record."],
+  },
+  {
+    h: "Confidentiality",
+    p: ["What is said in the room stays in the room. Circle members agree to confidentiality. The DD team does not repeat what you share in a conversation, dinner or Circle evening."],
+  },
+  {
+    h: "Company reporting",
+    p: ["When a company sponsors a seat, we give that company an aggregate quarterly report on attendance, satisfaction and overall outcomes. We never report on individual conversations, what you discussed, or who you were introduced to."],
+  },
+  {
+    h: "We do not sell member information",
+    p: ["Not to sponsors, not to partners, not to anyone."],
+  },
+];
 ---
-<Base title="Privacy | DD Network" description="What DD Network collects, why, and how to ask us to delete it.">
-  <header class="bg-paper">
-    <div class="wrap flex h-[72px] items-center">
-      <a href="/" class="flex flex-col leading-none">
-        <span class="font-display text-[26px] font-bold text-wine">DD Network</span>
-        <span class="mt-1 text-[12px]">by Decoding Draupadi</span>
-      </a>
-    </div>
-  </header>
-  <main id="main" class="section bg-paper !pb-[72px]">
-    <article class="wrap max-w-[760px]">
-      <p class="eyebrow text-paprika">Privacy</p>
-      <h1 class="h2 mt-4 text-paprika">Your data, plainly.</h1>
-      <p class="mt-4 text-[15px]">Last updated: 3 October 2026</p>
+<LegalLayout title="Privacy | DD Network" description="What DD Network collects, why, how it is used and how to ask us to delete it.">
+  <article class="wrap max-w-[800px]">
+    <p class="eyebrow text-crimson">Privacy</p>
+    <h1 class="h2 mt-6">Privacy</h1>
+    <p class="lede mt-6">What we collect, why, and what we will never do with it.</p>
+    <p class="small mt-3 opacity-70">Last updated: 3 October 2026</p>
 
-      <h2 class="mt-12 text-[26px] text-paprika">What we collect</h2>
-      <p class="mt-3">When you request an invite: your name, email, WhatsApp number, LinkedIn link, role, experience and the answers you give us. When you join the newsletter: your email. We also note which link brought you here.</p>
+    {sections.map((s) => (
+      <section class="mt-14 border-t border-maroon/15 pt-8">
+        <h2 class="text-[26px] font-black tracking-[-0.02em]">{s.h}</h2>
+        {s.p.map((t) => <p class="mt-4 opacity-90">{t}</p>)}
+      </section>
+    ))}
 
-      <h2 class="mt-10 text-[26px] text-paprika">Why</h2>
-      <p class="mt-3">To review your application and, if you join, to make introductions you have agreed to. We email the newsletter only if you ask for it.</p>
-
-      <h2 class="mt-10 text-[26px] text-paprika">Who sees it</h2>
-      <p class="mt-3">The DD team. We never sell or share individual data. Our form and email tools store it for us and use it for nothing else.</p>
-
-      <h2 class="mt-10 text-[26px] text-paprika">How long we keep it</h2>
-      <p class="mt-3">While you are a member or your application is open. After that we delete it, unless the law asks us to keep a record.</p>
-
-      <h2 class="mt-10 text-[26px] text-paprika">Your rights</h2>
-      <p class="mt-3">Under India's Digital Personal Data Protection Act, 2023, you can ask to see, correct or delete your data, or withdraw consent, at any time. Write to {isPlaceholder(email) ? email : <a class="link text-fire" href={`mailto:${email}`}>{email}</a>} and we will act within 30 days.</p>
-
-      <p class="mt-12"><a href="/" class="link text-fire">Back to DD Network</a></p>
-    </article>
-  </main>
-  <Footer />
-</Base>
+    <section class="mt-14 border-t border-maroon/15 pt-8">
+      <h2 class="text-[26px] font-black tracking-[-0.02em]">Deletion requests and your rights</h2>
+      <p class="mt-4 opacity-90">
+        Under India's Digital Personal Data Protection Act, 2023, you can ask to see, correct or delete your information, or withdraw consent, at any time.
+        Write to {isPlaceholder(email) ? "the DD team" : <a class="font-bold underline underline-offset-4" href={`mailto:${email}`}>{email}</a>} and we will act within 30 days.
+      </p>
+    </section>
+  </article>
+</LegalLayout>

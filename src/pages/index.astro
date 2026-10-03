@@ -1,43 +1,54 @@
 ---
 import Base from "../layouts/Base.astro";
-import Nav from "../components/sections/Nav.astro";
-import Hero from "../components/sections/Hero.astro";
-import ProofStrip from "../components/sections/ProofStrip.astro";
-import Network from "../components/sections/Network.astro";
-import Who from "../components/sections/Who.astro";
-import Membership from "../components/sections/Membership.astro";
-import Founding from "../components/sections/Founding.astro";
-import Hosts from "../components/sections/Hosts.astro";
-import HouseRules from "../components/sections/HouseRules.astro";
-import Faq from "../components/sections/Faq.astro";
-import Request from "../components/sections/Request.astro";
-import Footer from "../components/sections/Footer.astro";
-import { photos, photoSrcset } from "../data/photos";
+import AnnouncementBar from "../components/AnnouncementBar.astro";
+import Navigation from "../components/Navigation.astro";
+import Hero from "../components/Hero.astro";
+import ProofStrip from "../components/ProofStrip.astro";
+import ProblemSection from "../components/ProblemSection.astro";
+import ChapterSection from "../components/ChapterSection.astro";
+import FitSection from "../components/FitSection.astro";
+import Pillars from "../components/Pillars.astro";
+import HowItWorks from "../components/HowItWorks.astro";
+import FoundingHosts from "../components/FoundingHosts.astro";
+import MemberVoices from "../components/MemberVoices.astro";
+import CircleSection from "../components/CircleSection.astro";
+import Membership from "../components/Membership.astro";
+import CompaniesTeaser from "../components/CompaniesTeaser.astro";
+import FAQ from "../components/FAQ.astro";
+import Founding50 from "../components/Founding50.astro";
+import InviteForm from "../components/InviteForm.astro";
+import Footer from "../components/Footer.astro";
+import StickyCTA from "../components/StickyCTA.astro";
+import { photos, photoSrcset, heroImage } from "../data/photos";
 ---
 <Base>
   <link
     slot="head"
     rel="preload"
     as="image"
-    imagesrcset={photoSrcset(photos.hero, [420, 640, 920], 1.25)}
-    imagesizes="(min-width: 1024px) 460px, (min-width: 480px) 420px, 92vw"
+    imagesrcset={photoSrcset(photos.hero, heroImage.widths, heroImage.ratio)}
+    imagesizes={heroImage.sizes}
     fetchpriority="high"
   />
-  <Nav />
+  <AnnouncementBar />
+  <Navigation />
   <main id="main">
     <Hero />
     <ProofStrip />
-    <Network />
-    <Who />
+    <ProblemSection />
+    <ChapterSection />
+    <FitSection />
+    <Pillars />
+    <HowItWorks />
+    <FoundingHosts />
+    <MemberVoices />
+    <CircleSection />
     <Membership />
-    <Founding />
-    <Hosts />
-    <HouseRules />
-    <Faq />
-    <Request />
+    <CompaniesTeaser />
+    <FAQ />
+    <Founding50 />
+    <InviteForm />
   </main>
   <Footer />
-  <script>
-    import "../scripts/main.ts";
-  </script>
+  <StickyCTA />
 </Base>

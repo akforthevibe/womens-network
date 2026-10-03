@@ -1,8 +1,0 @@
----
-interface Props { id?: string; bg?: "paper" | "cream" | "wine" | "fire"; class?: string; label?: string }
-const { id, bg = "paper", class: className = "", label } = Astro.props;
-const bgClass = { paper: "bg-paper text-wine", cream: "bg-cream text-wine", wine: "bg-wine text-paper", fire: "bg-fire text-paper" }[bg];
----
-<section id={id} aria-label={label} class:list={[bgClass, "section relative", className]}>
-  <div class="wrap reveal"><slot /></div>
-</section>

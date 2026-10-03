@@ -1,0 +1,33 @@
+---
+import ScriptHeading from "./ScriptHeading.astro";
+import { voices } from "../data/content";
+// Real member quotes only. With no quotes in content.ts, this section renders nothing.
+---
+{voices.length > 0 && (
+  <section class="section bg-paper" aria-labelledby="voices-title">
+    <div class="wrap">
+      <p class="eyebrow reveal text-crimson">Why they're here</p>
+      <ScriptHeading id="voices-title" text="Don't take our word for it." script="word" class="reveal mt-6 max-w-[14ch]" />
+      <div class="mt-16 space-y-20 md:mt-24 md:space-y-28">
+        {voices.slice(0, 3).map((v, i) => (
+          <figure class:list={["reveal grid-12 m-0 items-center gap-y-8"]}>
+            <div class:list={["md:col-span-4", i % 2 ? "md:order-2 md:col-start-9" : ""]}>
+              <div class="photo aspect-[4/5] rounded-[24px]">
+                <img src={v.photo.src} alt={v.photo.alt} loading="lazy" decoding="async" width="480" height="600" />
+              </div>
+            </div>
+            <div class:list={["md:col-span-7", i % 2 ? "md:order-1" : "md:col-start-6"]}>
+              <blockquote class="text-[28px] font-extrabold leading-[1.2] tracking-[-0.02em] md:text-[38px]">
+                <p>&ldquo;{v.quote}&rdquo;</p>
+              </blockquote>
+              <figcaption class="mt-8">
+                <p class="font-extrabold">{v.name}</p>
+                <p class="small mt-1 opacity-80">{v.role}, {v.company}</p>
+              </figcaption>
+            </div>
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
+)}

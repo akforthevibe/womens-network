@@ -1,0 +1,18 @@
+---
+// A heading with one phrase set in the script face. The phrase stays real text.
+interface Props {
+  text: string;
+  script: string;
+  as?: "h1" | "h2" | "h3";
+  size?: "h1" | "h2" | "h3";
+  class?: string;
+  id?: string;
+}
+const { text, script, as: Tag = "h2", size, class: className = "", id } = Astro.props;
+const at = text.lastIndexOf(script);
+const before = at >= 0 ? text.slice(0, at) : text;
+const after = at >= 0 ? text.slice(at + script.length) : "";
+---
+<Tag id={id} class:list={[size ?? Tag, className]}>
+  {before}{at >= 0 && <span class="script">{script}</span>}{after}
+</Tag>

@@ -1,0 +1,25 @@
+---
+import ScriptHeading from "./ScriptHeading.astro";
+import { steps } from "../data/content";
+---
+<section class="section bg-paper" aria-labelledby="how-title">
+  <div class="wrap">
+    <div class="max-w-[820px]">
+      <p class="eyebrow reveal text-crimson">How it works</p>
+      <ScriptHeading id="how-title" text="Three steps to your first table." script="table" class="reveal mt-6" />
+    </div>
+    <ol class="mt-16 grid gap-0 md:mt-20 md:grid-cols-3 md:gap-6">
+      {steps.map((s, i) => (
+        <li class:list={["reveal relative border-t-2 border-maroon pb-10 pt-6 md:pb-0 md:pr-6", i === 1 && "d1", i === 2 && "d2"]}>
+          <span class="block text-[64px] font-black leading-none tracking-[-0.04em] text-crimson md:text-[88px]">{s.n}</span>
+          <h3 class="mt-5 text-[34px] font-black leading-none tracking-[-0.03em] md:text-[40px]">{s.title}</h3>
+          <p class="mt-4 max-w-[24em] opacity-85">{s.body}</p>
+        </li>
+      ))}
+    </ol>
+    <div class="reveal mt-12 flex flex-col items-start gap-6 rounded-[24px] bg-cream p-7 md:mt-20 md:flex-row md:items-center md:justify-between md:p-10">
+      <p class="text-[20px] font-bold leading-snug md:text-[22px]">Bring your LinkedIn and five minutes. We'll handle the rest.</p>
+      <a href="#request" data-invite="how" class="btn btn-primary shrink-0">Start your application</a>
+    </div>
+  </div>
+</section>

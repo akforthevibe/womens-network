@@ -1,0 +1,44 @@
+---
+import ScriptHeading from "./ScriptHeading.astro";
+import PhotoFrame from "./PhotoFrame.astro";
+import Sticker from "./Sticker.astro";
+import Doodle from "./Doodle.astro";
+import Arrow from "./Arrow.astro";
+import { photos, heroImage } from "../data/photos";
+import { site, href } from "../data/site";
+---
+<section class="relative z-10 pb-16 pt-8 md:pb-20 md:pt-16 lg:pb-24 lg:pt-20" aria-labelledby="hero-title" data-hero>
+  <div class="wrap grid grid-cols-1 items-center gap-x-6 gap-y-14 lg:grid-cols-12">
+    <div class="lg:col-span-7 lg:pr-10">
+      <p class="eyebrow text-crimson">By application <span aria-hidden="true">·</span> First chapter: Mumbai</p>
+      <ScriptHeading as="h1" id="hero-title" text="The room you've been looking for." script="looking for" class="mt-6 max-w-[11ch] md:max-w-[12ch]" />
+      <p class="lede mt-10 max-w-[34em] md:mt-12">
+        A private professional network for women building their next chapter, inside a company or on their own. We are starting with Mumbai.
+      </p>
+      <div class="mt-10 flex flex-col items-start gap-5 sm:flex-row sm:items-center sm:gap-8">
+        <a href="#request" data-invite="hero" class="btn btn-primary">Request an invite</a>
+        <a href={href(site.links.community)} class="tlink" data-community="hero">Join the free DD community <Arrow /></a>
+      </div>
+      <p class="mt-8 text-[14.5px] font-semibold tracking-[0.01em] opacity-80">
+        ₹25,000 a year <span aria-hidden="true" class="mx-1.5">·</span> 50 founding seats <span aria-hidden="true" class="mx-1.5">·</span> Every application read by a person
+      </p>
+    </div>
+
+    <div class="relative mx-auto w-[calc(100%-36px)] max-w-[480px] lg:col-span-5 lg:mr-5 lg:mb-[-190px] lg:w-auto lg:max-w-none xl:-mr-20">
+      <PhotoFrame
+        photo={photos.hero}
+        ratio={heroImage.ratio}
+        widths={heroImage.widths}
+        sizes={heroImage.sizes}
+        eager
+        block="amber"
+        class="xl:w-[560px]"
+      >
+        <Doodle kind="frame" class="absolute -inset-3 -z-0 h-[calc(100%+24px)] w-[calc(100%+24px)] text-maroon" />
+      </PhotoFrame>
+      <div class="settle absolute -left-5 -top-8 md:-left-12 md:-top-10" data-reveal>
+        <Sticker top="50 founding seats" bottom="Mumbai · Chapter one" size={136} class="md:!h-[152px] md:!w-[152px]" />
+      </div>
+    </div>
+  </div>
+</section>

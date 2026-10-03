@@ -1,0 +1,8 @@
+---
+// Right arrow drawn as SVG, since the type does not carry one. Decorative.
+interface Props { class?: string }
+const { class: className = "" } = Astro.props;
+---
+<svg class:list={["inline-block h-[0.8em] w-[1em] shrink-0", className]} viewBox="0 0 20 16" fill="none" aria-hidden="true">
+  <path d="M1 8h16M11 2l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+</svg>

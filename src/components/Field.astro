@@ -1,0 +1,21 @@
+---
+// Labelled form field with an inline error linked by aria-describedby.
+interface Props { name: string; label: string; hint?: string; group?: boolean; class?: string }
+const { name, label, hint, group = false, class: className = "" } = Astro.props;
+const id = `f-${name}`;
+---
+{group ? (
+  <fieldset class:list={["min-w-0", className]} data-field={name} aria-describedby={`${id}-error`}>
+    <legend class="label">{label}</legend>
+    {hint && <p class="small mt-1 opacity-75">{hint}</p>}
+    <div class="mt-4"><slot /></div>
+    <p id={`${id}-error`} class="error" hidden data-error></p>
+  </fieldset>
+) : (
+  <div class:list={["min-w-0", className]} data-field={name}>
+    <label for={id} class="label">{label}</label>
+    {hint && <p id={`${id}-hint`} class="small mt-1 opacity-75">{hint}</p>}
+    <div class="mt-1"><slot /></div>
+    <p id={`${id}-error`} class="error" hidden data-error></p>
+  </div>
+)}

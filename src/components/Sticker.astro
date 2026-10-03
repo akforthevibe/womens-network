@@ -1,0 +1,22 @@
+---
+// Round sticker. Two short lines of text, rotated. Settles into place when its parent has .settle.
+interface Props {
+  top: string;
+  bottom?: string;
+  colour?: "amber" | "gold" | "paper";
+  size?: number;
+  tilt?: number;
+  class?: string;
+}
+const { top, bottom, colour = "amber", size = 132, tilt = -8, class: className = "" } = Astro.props;
+const bg = { amber: "bg-amber text-maroon", gold: "bg-gold text-maroon", paper: "bg-paper text-maroon" }[colour];
+---
+<div
+  class:list={["sticker pointer-events-none flex flex-col items-center justify-center rounded-full text-center", bg, className]}
+  style={`width:${size}px;height:${size}px;--tilt:${tilt}deg`}
+>
+  <span class="block px-3 font-black uppercase leading-[0.95] tracking-[0.02em]" style={`font-size:${Math.round(size * 0.135)}px`}>{top}</span>
+  {bottom && (
+    <span class="mt-2 block border-t-2 border-current/40 px-2 pt-1.5 font-bold uppercase tracking-[0.12em]" style={`font-size:${Math.max(9, Math.round(size * 0.068))}px`}>{bottom}</span>
+  )}
+</div>

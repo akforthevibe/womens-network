@@ -1,0 +1,22 @@
+---
+import Arrow from "./Arrow.astro";
+---
+<div class="relative bg-plum text-paper" data-announcement>
+  <div class="wrap flex min-h-[48px] items-center justify-center py-2 pr-12 md:min-h-[42px] md:pr-14">
+    <a href="#request" data-invite="announcement" class="group inline-flex flex-wrap items-center justify-center gap-x-1.5 text-center text-[14px] font-semibold leading-snug md:text-[14.5px]">
+      <span>Founding 50 applications are open.</span>
+      <span class="hidden sm:inline">First chapter: Mumbai.</span>
+      <span class="inline-flex items-center gap-1.5 underline decoration-paper/40 underline-offset-4 group-hover:decoration-paper">
+        Apply by 15 November 2026 <Arrow class="text-amber" />
+      </span>
+    </a>
+  </div>
+  <button
+    type="button"
+    class="absolute right-2 top-1/2 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full text-paper/80 transition-colors hover:text-paper md:right-4 [.js_&]:flex"
+    aria-label="Close announcement"
+    data-announcement-close
+  >
+    <svg viewBox="0 0 16 16" class="h-3.5 w-3.5" aria-hidden="true"><path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
+  </button>
+</div>

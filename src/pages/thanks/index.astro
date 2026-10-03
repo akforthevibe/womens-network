@@ -1,0 +1,16 @@
+---
+// Shown only when JavaScript is off and a form posts normally.
+import LegalLayout from "../../components/LegalLayout.astro";
+import Arrow from "../../components/Arrow.astro";
+import { site, href } from "../../data/site";
+---
+<LegalLayout title="See you soon | DD Network" description="Application received." noindex>
+  <div class="wrap max-w-[800px]">
+    <p class="eyebrow text-crimson">Application received</p>
+    <h1 class="h2 mt-6">See you soon.</h1>
+    <p class="lede mt-8">We've got it. We'll read your application ourselves and be in touch within {site.replyTime}.</p>
+    <p class="mt-10 font-bold">While you're waiting, join the free DD community.</p>
+    <a href={href(site.links.community)} class="btn btn-primary mt-5">Join the free DD community <Arrow /></a>
+    <p class="small mt-6 opacity-80"><a href="/#notes" class="underline underline-offset-4">Or get the founding notes once a month.</a></p>
+  </div>
+</LegalLayout>

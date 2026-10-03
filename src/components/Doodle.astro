@@ -1,0 +1,26 @@
+---
+// Hand-drawn SVG lines. No more than seven on the whole site. Drawn in when scrolled to.
+interface Props {
+  kind: "frame" | "underline" | "loop" | "arrow" | "spark" | "ring";
+  class?: string;
+  colour?: string;
+}
+const { kind, class: className = "", colour = "currentColor" } = Astro.props;
+const paths: Record<Props["kind"], { box: string; d: string[]; w: number }> = {
+  // A loose rounded line around a photograph
+  frame: {
+    box: "0 0 400 500",
+    d: ["M38 14 C 140 4, 280 8, 372 18 C 392 22, 396 40, 394 70 C 390 190, 398 330, 392 452 C 390 480, 374 490, 340 488 C 240 494, 120 496, 44 488 C 16 486, 8 470, 9 440 C 12 320, 4 190, 10 60 C 11 30, 20 16, 52 12"],
+    w: 2,
+  },
+  underline: { box: "0 0 300 24", d: ["M4 16 C 60 6, 120 4, 176 10 S 260 20, 296 8"], w: 3.5 },
+  loop: { box: "0 0 240 110", d: ["M120 8 C 50 6, 6 26, 8 56 C 10 90, 80 104, 140 100 C 200 96, 236 76, 232 48 C 228 18, 176 4, 96 14"], w: 3 },
+  arrow: { box: "0 0 120 90", d: ["M8 10 C 30 60, 60 78, 106 74", "M88 60 L 107 74 L 86 86"], w: 3 },
+  spark: { box: "0 0 60 60", d: ["M30 4 L 30 22", "M30 38 L 30 56", "M4 30 L 22 30", "M38 30 L 56 30", "M12 12 L 22 22", "M38 38 L 48 48", "M48 12 L 38 22", "M22 38 L 12 48"], w: 3 },
+  ring: { box: "0 0 200 200", d: ["M100 8 C 150 6, 192 44, 192 100 C 192 156, 150 194, 98 192 C 44 190, 8 152, 10 98 C 12 46, 52 10, 112 12"], w: 2.5 },
+};
+const p = paths[kind];
+---
+<svg class:list={["doodle pointer-events-none", className]} viewBox={p.box} fill="none" aria-hidden="true" preserveAspectRatio="none">
+  {p.d.map((d) => <path d={d} pathLength="1" stroke={colour} stroke-width={p.w} stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke" />)}
+</svg>

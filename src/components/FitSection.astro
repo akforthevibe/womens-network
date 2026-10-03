@@ -1,0 +1,48 @@
+---
+import ScriptHeading from "./ScriptHeading.astro";
+import { fitFor, fitNot } from "../data/content";
+---
+<section class="section bg-paper" aria-labelledby="fit-title">
+  <div class="wrap">
+    <div class="max-w-[760px]">
+      <p class="eyebrow reveal text-crimson">Who is this for?</p>
+      <ScriptHeading id="fit-title" text="You probably know." script="know" class="reveal mt-6" />
+    </div>
+
+    <div class="grid-12 mt-16 gap-y-14 md:mt-20">
+      <div class="md:col-span-7">
+        <h3 class="eyebrow reveal">It's for you if</h3>
+        <ol class="mt-6 border-t-2 border-maroon">
+          {fitFor.map((item, i) => (
+            <li class="reveal grid grid-cols-[44px_1fr] gap-x-4 border-b border-maroon/15 py-7 md:grid-cols-[64px_1fr]">
+              <span class="pt-1 text-[15px] font-black text-crimson">0{i + 1}</span>
+              <div>
+                <p class="text-[24px] font-extrabold leading-[1.15] tracking-[-0.02em] md:text-[28px]">{item.title}</p>
+                <p class="mt-2 max-w-[34em] opacity-85">{item.body}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+
+      <div class="md:col-span-4 md:col-start-9">
+        <div class="reveal d1 rounded-[24px] bg-maroon p-7 text-paper md:mt-0 md:p-8">
+          <h3 class="eyebrow text-amber">It's not for you if</h3>
+          <ul class="mt-6 space-y-5">
+            {fitNot.map((line) => (
+              <li class="flex gap-3 text-[19px] font-bold leading-snug">
+                <svg viewBox="0 0 16 16" class="mt-1.5 h-3.5 w-3.5 shrink-0 text-amber" aria-hidden="true"><path d="M2 2l12 12M14 2L2 14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" /></svg>
+                <span>{line}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal mt-16 flex flex-col items-start gap-6 md:mt-20 md:flex-row md:items-center md:justify-between md:gap-10">
+      <p class="max-w-[30ch] text-[26px] font-extrabold leading-[1.15] tracking-[-0.02em] md:text-[32px]">The room works because everyone has a reason to be there.</p>
+      <a href="#request" data-invite="fit" class="btn btn-primary shrink-0">See if you're a fit</a>
+    </div>
+  </div>
+</section>

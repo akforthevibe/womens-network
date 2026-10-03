@@ -1,6 +1,0 @@
----
-// Looping hand-drawn scribble.
-interface Props { class?: string; color?: "flame" | "fire" }
-const { class: className = "", color = "fire" } = Astro.props;
----
-<svg class:list={["draw pointer-events-none", className]} viewBox="0 0 220 120" fill="none" aria-hidden="true" focusable="false"><path d="M8 92 C 30 40, 70 20, 92 40 C 112 58, 84 86, 70 70 C 56 54, 96 18, 128 30 C 156 40, 140 76, 124 66 C 108 56, 150 14, 182 26 C 204 34, 210 58, 196 74" pathLength="1" stroke={`var(--color-${color})`} stroke-width="4" stroke-linecap="round" stroke-linejoin="round" /></svg>

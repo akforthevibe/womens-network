@@ -3,10 +3,10 @@
 // this forwards copies when the keys below are set in Site settings > Environment variables.
 //
 //   AIRTABLE_TOKEN, AIRTABLE_BASE_ID, AIRTABLE_TABLE  (invite form to Airtable)
-//   BEEHIIV_API_KEY, BEEHIIV_PUBLICATION_ID            (newsletter to Beehiiv)
+//   BEEHIIV_API_KEY, BEEHIIV_PUBLICATION_ID            (founding notes to Beehiiv)
 //
 // Substack has no public subscribe API. If the DD newsletter is on Substack, export
-// the "newsletter" form from Netlify and import it into Substack.
+// the "notes" form from Netlify and import it into Substack.
 
 export default async (req) => {
   const { payload } = await req.json();
@@ -15,7 +15,7 @@ export default async (req) => {
 
   try {
     if (form === "invite") await toAirtable(data);
-    if (form === "newsletter") await toNewsletter(data.email);
+    if (form === "notes") await toNewsletter(data.email);
   } catch (err) {
     // Log and carry on: the submission is already safe in Netlify Forms.
     console.error(`Forwarding ${form} submission failed:`, err);
@@ -35,16 +35,10 @@ async function toAirtable(d) {
     Email: d.email,
     WhatsApp: d.whatsapp,
     LinkedIn: d.linkedin,
-    "Role and company": d.role,
-    "Years of experience": d.years,
-    "Right now": d.where,
-    "Applying as": d.applying_as,
+    Describes: d.describes,
+    Interest: d.interest,
     "Need in 90 days": d.need,
     "Could offer": d.offer,
-    "Rank: room": d.rank_room,
-    "Rank: seen": d.rank_seen,
-    "Rank: introduced": d.rank_introduced,
-    Interest: d.interest,
     "Heard via": d.heard,
     Consent: d.consent === "yes",
     Source: d.source,

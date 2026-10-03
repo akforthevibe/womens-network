@@ -1,0 +1,15 @@
+---
+import { proof } from "../data/content";
+---
+<section class="bg-crimson text-paper" aria-label="DD so far">
+  <div class="wrap lg:pr-[520px] xl:pr-[540px]">
+    <dl class="grid grid-cols-2 gap-x-5 gap-y-8 py-10 md:grid-cols-4 md:py-11 lg:grid-cols-2 lg:gap-y-6 xl:grid-cols-4">
+      {proof.map((p) => (
+        <div class="flex flex-col-reverse justify-end">
+          <dt class="mt-1.5 max-w-[16ch] text-[15px] font-medium leading-snug opacity-90">{p.label}</dt>
+          <dd class="whitespace-nowrap text-[30px] font-black leading-none tracking-[-0.03em] sm:text-[34px] md:text-[31px] lg:text-[34px] 2xl:text-[38px]">{p.value}</dd>
+        </div>
+      ))}
+    </dl>
+  </div>
+</section>

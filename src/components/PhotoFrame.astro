@@ -1,0 +1,50 @@
+---
+// Black and white photograph. Colour comes from the offset block behind it.
+import { photoUrl, photoSrcset, type Photo } from "../data/photos";
+
+interface Props {
+  photo: Photo;
+  ratio?: number; // height / width
+  sizes?: string;
+  widths?: number[];
+  eager?: boolean;
+  block?: "amber" | "plum" | "magenta" | "crimson" | "gold" | "cream" | "none";
+  offset?: "br" | "bl" | "tr" | "tl";
+  radius?: number;
+  class?: string;
+}
+
+const {
+  photo,
+  ratio = 1.25,
+  sizes = "(min-width: 1024px) 560px, 100vw",
+  widths = [480, 720, 960, 1200],
+  eager = false,
+  block = "amber",
+  offset = "br",
+  radius = 24,
+  class: className = "",
+} = Astro.props;
+const fallback = widths[Math.min(1, widths.length - 1)];
+const blockClass = { amber: "bg-amber", plum: "bg-plum", magenta: "bg-magenta", crimson: "bg-crimson", gold: "bg-gold", cream: "bg-cream", none: "" }[block];
+const shift = { br: "translate(18px, 18px)", bl: "translate(-18px, 18px)", tr: "translate(18px, -18px)", tl: "translate(-18px, -18px)" }[offset];
+---
+<figure class:list={["relative isolate m-0", className]}>
+  {block !== "none" && (
+    <div class:list={["absolute inset-0 -z-10", blockClass]} style={`border-radius:${radius}px;transform:${shift}`} aria-hidden="true"></div>
+  )}
+  <div class="photo h-full" style={`border-radius:${radius}px;aspect-ratio:1 / ${ratio}`}>
+    <img
+      src={photoUrl(photo, fallback, ratio)}
+      srcset={photoSrcset(photo, widths, ratio)}
+      sizes={sizes}
+      alt={photo.alt}
+      width={fallback}
+      height={Math.round(fallback * ratio)}
+      loading={eager ? "eager" : "lazy"}
+      fetchpriority={eager ? "high" : "auto"}
+      decoding={eager ? "sync" : "async"}
+    />
+  </div>
+  <slot />
+</figure>

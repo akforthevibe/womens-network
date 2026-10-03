@@ -1,0 +1,8 @@
+---
+interface Props { tone?: "dark" | "light"; class?: string }
+const { tone = "dark", class: className = "" } = Astro.props;
+---
+<a href="/" class:list={["inline-flex flex-col leading-none", tone === "light" ? "text-paper" : "text-maroon", className]}>
+  <span class="text-[19px] font-black tracking-[0.04em] md:text-[21px]">DD NETWORK</span>
+  <span class="mt-1 text-[9.5px] font-bold tracking-[0.2em] opacity-75 md:text-[10px]">BY DECODING DRAUPADI</span>
+</a>

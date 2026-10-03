@@ -2,8 +2,20 @@
 import "../styles/global.css";
 import { site } from "../data/site";
 
-interface Props { title?: string; description?: string; noindex?: boolean }
-const { title = site.title, description = site.description, noindex = false } = Astro.props;
+interface Props {
+  title?: string;
+  description?: string;
+  ogTitle?: string;
+  ogDescription?: string;
+  noindex?: boolean;
+}
+const {
+  title = site.title,
+  description = site.description,
+  ogTitle = site.ogTitle,
+  ogDescription = site.ogDescription,
+  noindex = false,
+} = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const og = new URL("/og.png", Astro.site).href;
 const { plausibleDomain, ga4Id } = site.analytics;
@@ -18,26 +30,30 @@ const { plausibleDomain, ga4Id } = site.analytics;
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     {noindex && <meta name="robots" content="noindex" />}
-    <meta name="theme-color" content="#400101" />
+    <meta name="theme-color" content="#43123F" />
+
+    <link rel="preload" href="/fonts/figtree.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/script.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
+    <slot name="head" />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="DD Network" />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
+    <meta property="og:title" content={ogTitle} />
+    <meta property="og:description" content={ogDescription} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={og} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="DD Network. For women building their next chapter." />
+    <meta property="og:image:alt" content="The room you've been looking for. DD Network, first chapter: Mumbai." />
     <meta property="og:locale" content="en_IN" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={ogTitle} />
+    <meta name="twitter:description" content={ogDescription} />
 
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-
-    <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
-    <slot name="head" />
 
     {plausibleDomain && <script defer data-domain={plausibleDomain} src="https://plausible.io/js/script.js"></script>}
     {plausibleDomain && <script is:inline>window.plausible = window.plausible || function () { (window.plausible.q = window.plausible.q || []).push(arguments); };</script>}
@@ -55,5 +71,8 @@ const { plausibleDomain, ga4Id } = site.analytics;
   </head>
   <body class="grain">
     <slot />
+    <script>
+      import "../scripts/main.ts";
+    </script>
   </body>
 </html>

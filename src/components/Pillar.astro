@@ -1,0 +1,43 @@
+---
+import PhotoFrame from "./PhotoFrame.astro";
+import Doodle from "./Doodle.astro";
+import type { Pillar } from "../data/content";
+
+interface Props { pillar: Pillar; flip?: boolean }
+const { pillar, flip = false } = Astro.props;
+const tone = {
+  plum: "bg-plum text-paper",
+  magenta: "bg-magenta text-paper",
+  amber: "bg-amber text-maroon",
+  crimson: "bg-crimson text-paper",
+}[pillar.colour];
+---
+<article class="grid-12 items-center gap-y-10" aria-labelledby={`pillar-${pillar.n}`}>
+  <div class:list={["zoom unveil relative md:col-span-6 lg:col-span-6", flip ? "md:order-2 md:col-start-7 lg:col-start-7" : "lg:-ml-6"]} data-reveal>
+    <PhotoFrame
+      photo={pillar.photo}
+      ratio={0.78}
+      block={pillar.colour}
+      offset={flip ? "br" : "bl"}
+      widths={[480, 720, 960, 1200]}
+      sizes="(min-width: 1024px) 600px, (min-width: 768px) 48vw, calc(100vw - 58px)"
+      class={flip ? "mr-[18px] md:mr-0" : "ml-[18px] md:ml-0"}
+    />
+  </div>
+  <div class:list={["md:col-span-6 lg:col-span-5", flip ? "md:order-1 md:pr-6 lg:pr-0" : "md:pl-6 lg:col-start-8 lg:pl-0"]}>
+    <div class="reveal flex items-center gap-4">
+      <span class:list={["flex h-12 w-12 items-center justify-center rounded-full text-[15px] font-black", tone]}>{pillar.n}</span>
+      <span class="h-px flex-1 bg-maroon/20" aria-hidden="true"></span>
+    </div>
+    <h3 id={`pillar-${pillar.n}`} class="reveal mt-7 text-[44px] font-black uppercase leading-[0.95] tracking-[-0.03em] md:text-[56px]">
+      <span class="relative inline-block">
+        {pillar.title}
+        {pillar.doodle && <Doodle kind="loop" class="absolute -inset-x-6 -inset-y-4 h-[calc(100%+32px)] w-[calc(100%+48px)] text-amber" />}
+      </span>
+    </h3>
+    <p class="lede reveal d1 mt-6 max-w-[30em]">{pillar.body}</p>
+    <p class="reveal d2 mt-6 inline-flex items-center gap-3 text-[15.5px] font-bold">
+      <span class:list={["h-2.5 w-2.5 rounded-full", tone]} aria-hidden="true"></span>{pillar.detail}
+    </p>
+  </div>
+</article>

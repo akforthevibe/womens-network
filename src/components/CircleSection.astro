@@ -1,0 +1,54 @@
+---
+import ScriptHeading from "./ScriptHeading.astro";
+import PhotoFrame from "./PhotoFrame.astro";
+import Sticker from "./Sticker.astro";
+import Doodle from "./Doodle.astro";
+import { photos } from "../data/photos";
+---
+<section id="circle" class="on-dark section relative overflow-hidden bg-plum text-paper" aria-labelledby="circle-title">
+  <div class="wrap grid-12 items-center gap-y-16">
+    <div class="md:col-span-6 lg:col-span-6">
+      <p class="eyebrow reveal text-amber">The Circle</p>
+      <div class="relative">
+        <ScriptHeading id="circle-title" text="Eight women. One table." script="table" size="h1" class="reveal mt-6 max-w-[9ch]" />
+        <Doodle kind="spark" class="absolute -top-2 right-[8%] h-12 w-12 text-gold md:right-[14%] md:h-14 md:w-14" />
+      </div>
+      <p class="reveal d1 mt-10 max-w-[22ch] text-[24px] font-extrabold leading-[1.2] tracking-[-0.01em] md:text-[28px]">
+        Six evenings a year. Eight to ten women. One decision you cannot talk about at work.
+      </p>
+      <p class="lede reveal d2 mt-6 max-w-[30em] opacity-90">
+        You bring the thing you're trying to figure out. You leave with a clearer plan, a sharper perspective and eight people who know the context.
+      </p>
+
+      <dl class="reveal d2 mt-10 flex flex-wrap gap-x-10 gap-y-4 border-t border-paper/20 pt-6">
+        <div><dt class="sr-only">Who</dt><dd class="eyebrow text-amber">For women 10+ years in</dd></div>
+        <div><dt class="sr-only">Opens</dt><dd class="eyebrow">Opening January 2027</dd></div>
+      </dl>
+
+      <div class="reveal d3 mt-10 flex flex-col items-start gap-5 sm:flex-row sm:items-center sm:gap-8">
+        <a href="/?interest=circle#request" data-circle-waitlist class="btn btn-circle">Join the Circle waitlist</a>
+        <p class="leading-tight">
+          <span class="block text-[24px] font-black tracking-[-0.02em]">₹65,000 / year</span>
+          <span class="small opacity-80">Membership included.</span>
+        </p>
+      </div>
+    </div>
+
+    <div class="relative md:col-span-6 lg:col-span-5 lg:col-start-8">
+      <div class="unveil settle" data-reveal>
+        <PhotoFrame
+          photo={photos.circle}
+          ratio={1.18}
+          block="magenta"
+          offset="br"
+          widths={[480, 720, 960]}
+          sizes="(min-width: 1024px) 480px, (min-width: 768px) 46vw, calc(100vw - 58px)"
+          class="mr-[18px] md:mr-0"
+        />
+        <div class="absolute -bottom-8 -left-4 md:-left-12">
+          <Sticker top="Opening Jan 2027" bottom="Circle" colour="gold" size={124} tilt={8} />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

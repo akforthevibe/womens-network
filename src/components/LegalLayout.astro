@@ -1,0 +1,17 @@
+---
+// Simple text page wrapper for /privacy and /thanks.
+import Base from "../layouts/Base.astro";
+import AnnouncementBar from "./AnnouncementBar.astro";
+import Navigation from "./Navigation.astro";
+import Footer from "./Footer.astro";
+interface Props { title: string; description: string; noindex?: boolean }
+const { title, description, noindex = false } = Astro.props;
+---
+<Base title={title} description={description} ogTitle={title} ogDescription={description} noindex={noindex}>
+  <AnnouncementBar />
+  <Navigation />
+  <main id="main" class="bg-paper pb-[100px] pt-[72px] md:pb-[140px] md:pt-[110px]">
+    <slot />
+  </main>
+  <Footer />
+</Base>

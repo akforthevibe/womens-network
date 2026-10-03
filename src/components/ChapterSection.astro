@@ -1,0 +1,49 @@
+---
+import ScriptHeading from "./ScriptHeading.astro";
+import PhotoFrame from "./PhotoFrame.astro";
+import Arrow from "./Arrow.astro";
+import { photos } from "../data/photos";
+// Chapter one is filled in; the next chapters are open outlines, so the page shows a network that grows.
+const chapters = ["Mumbai", "Next", "Next"];
+---
+<section class="section bg-cream" aria-labelledby="chapter-title">
+  <div class="wrap grid-12 items-center gap-y-14">
+    <div class="unveil md:col-span-6 lg:col-span-6 lg:-ml-10" data-reveal>
+      <PhotoFrame
+        photo={photos.chapter}
+        ratio={1.08}
+        block="plum"
+        offset="bl"
+        widths={[480, 720, 960, 1200]}
+        sizes="(min-width: 1024px) 620px, (min-width: 768px) 50vw, calc(100vw - 58px)"
+        class="ml-[18px] md:ml-0"
+      />
+    </div>
+    <div class="md:col-span-6 md:pl-6 lg:col-span-5 lg:col-start-8 lg:pl-0">
+      <p class="eyebrow reveal text-crimson">The first chapter</p>
+      <ScriptHeading id="chapter-title" text="Start with one room." script="one room" class="reveal mt-6" />
+      <div class="reveal d1 mt-8 space-y-5">
+        <p>DD Network is being built chapter by chapter. Mumbai is where we begin.</p>
+        <p>The first 50 women will shape the room, the rituals and the standard for everyone who joins next.</p>
+        <p class="font-extrabold">Mumbai is chapter one, not the whole story.</p>
+      </div>
+
+      <ol class="reveal d2 mt-10 flex items-end gap-2.5 sm:gap-3" aria-label="Chapters">
+        {chapters.map((c, i) => (
+          <li class:list={[
+            "flex min-w-0 flex-1 flex-col justify-between rounded-[18px] p-3.5 sm:p-4",
+            i === 0 ? "h-[124px] bg-plum text-paper" : "h-[96px] border-2 border-dashed border-maroon/25 text-maroon/55",
+          ]}>
+            <span class="text-[11px] font-bold uppercase tracking-[0.12em] sm:text-[12px] sm:tracking-[0.16em]">Chapter {i + 1}</span>
+            <span class:list={["font-black leading-none tracking-[-0.02em]", i === 0 ? "text-[21px] sm:text-[24px]" : "text-[18px]"]}>
+              {i === 0 ? c : <span aria-label="To come">· · ·</span>}
+            </span>
+          </li>
+        ))}
+      </ol>
+      <p class="reveal d2 mt-3 text-[14px] font-semibold opacity-70">Mumbai, November 2026.</p>
+
+      <a href="#request" data-invite="chapter" class="tlink reveal d3 mt-10">Be part of the first chapter <Arrow /></a>
+    </div>
+  </div>
+</section>

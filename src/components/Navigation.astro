@@ -1,0 +1,61 @@
+---
+import Logo from "./Logo.astro";
+import { nav } from "../data/site";
+---
+<header class="sticky top-0 z-50 border-b border-transparent bg-paper transition-colors duration-300 [&.is-stuck]:border-maroon/10" data-header>
+  <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-[90] focus:rounded-full focus:bg-maroon focus:px-4 focus:py-2 focus:text-paper">Skip to content</a>
+  <div class="wrap flex h-[68px] items-center justify-between gap-6 md:h-[78px]">
+    <Logo />
+    <nav aria-label="Main" class="hidden lg:block">
+      <ul class="flex items-center gap-8 text-[15.5px] font-semibold">
+        {nav.map((item) => (
+          <li><a href={item.href} class="relative py-2 after:absolute after:inset-x-0 after:bottom-0.5 after:h-0.5 after:origin-left after:scale-x-0 after:bg-crimson after:transition-transform after:duration-300 hover:after:scale-x-100">{item.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+    <a href="/#request" data-invite="nav" class="btn btn-primary btn-sm hidden lg:inline-flex">Request an invite</a>
+    <button
+      type="button"
+      class="-mr-2 flex h-12 w-12 items-center justify-center lg:hidden"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+      aria-label="Open menu"
+      data-menu-toggle
+    >
+      <svg viewBox="0 0 28 18" class="h-[18px] w-7" aria-hidden="true">
+        <path d="M2 3h24M2 9h24M10 15h16" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" />
+      </svg>
+    </button>
+  </div>
+</header>
+
+<div class="wrap pb-1 pt-1 lg:hidden">
+  <a href="/#request" data-invite="nav-mobile" class="btn btn-primary w-full">Request an invite</a>
+</div>
+
+<div
+  id="mobile-menu"
+  class="fixed inset-0 z-[70] hidden flex-col bg-paper lg:hidden [&.is-open]:flex"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Menu"
+  data-menu
+>
+  <div class="wrap flex h-[68px] shrink-0 items-center justify-between">
+    <Logo />
+    <button type="button" class="-mr-2 flex h-12 w-12 items-center justify-center" aria-label="Close menu" data-menu-close>
+      <svg viewBox="0 0 20 20" class="h-5 w-5" aria-hidden="true"><path d="M3 3l14 14M17 3L3 17" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" /></svg>
+    </button>
+  </div>
+  <nav aria-label="Mobile" class="wrap flex flex-1 flex-col justify-between overflow-y-auto pb-10 pt-6">
+    <ul class="space-y-1">
+      {nav.map((item) => (
+        <li><a href={item.href} class="block py-2.5 text-[40px] font-black leading-[1.05] tracking-[-0.03em]">{item.label}</a></li>
+      ))}
+    </ul>
+    <div class="mt-10">
+      <a href="/#request" data-invite="menu" class="btn btn-primary w-full">Request an invite</a>
+      <p class="small mt-4 text-center opacity-75">Applications close 15 November 2026.</p>
+    </div>
+  </nav>
+</div>
